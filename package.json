@@ -2,7 +2,7 @@
   "name": "vscode-packer-powertools",
   "displayName": "Packer Powertools",
   "description": "Packer file formatting and inline validation",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.66.0"
   },
@@ -12,14 +12,19 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:packer"
+    "onLanguage:packer",
+    "workspaceContains:**/*.pkr.hcl"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-packer-powertools.helloWorld",
-        "title": "Hello World"
+        "command": "packer.init",
+        "title": "Packer: init"
+      },
+      {
+        "command": "packer.build",
+        "title": "Packer: build"
       }
     ],
     "languages": [

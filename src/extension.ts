@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { TextDocument, TextEdit } from "vscode";
+import { build, init } from "./command";
 import { format } from "./format";
 import { activateValidation } from "./validate";
 
@@ -25,6 +26,16 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions,
     diagnosticCollection,
     outputChannel
+  );
+
+  // Commands
+  context.subscriptions.push(
+    vscode.commands.registerCommand("packer.init", async () => {
+      await init();
+    }),
+    vscode.commands.registerCommand("packer.build", async () => {
+      await build();
+    })
   );
 }
 
