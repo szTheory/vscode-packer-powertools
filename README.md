@@ -26,6 +26,10 @@ Toggle comments
 
 Commands
 
+- `packer init`
+- `packer build`
+- `packer inspect`
+
 ![Commands](./images/commands.gif)
 
 ## Requirements
