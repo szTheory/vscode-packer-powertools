@@ -1,5 +1,6 @@
 {
   "name": "vscode-packer-powertools",
+  "publisher": "szTheory",
   "displayName": "Packer Powertools",
   "description": "Packer file formatting, inline validation, commands, syntax highlighting, and code folding",
   "version": "0.1.0",

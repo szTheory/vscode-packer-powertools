@@ -1,25 +1,31 @@
-# Packer Powertools
+# <img src="./images/icon.png" width="24"> Packer Powertools
 
 VS Code extension for Packer with code formatting, inline error messages, syntax highlighting, code folding, and command palette integration.
 
 ## Features
 
 Code formatting
+
 ![Code formatting](./images/code-formatting.gif)
 
 Validation
+
 ![Validation](./images/validation.png)
 
 Syntax highlighting
+
 ![Syntax highlighting](./images/syntax-highlighting.png)
 
 Code folding
+
 ![Code folding](./images/code-folding.gif)
 
 Toggle comments
+
 ![Toggle comments](./images/toggle-comments.gif)
 
 Commands
+
 ![Commands](./images/commands.gif)
 
 ## Requirements
