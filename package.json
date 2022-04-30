@@ -1,11 +1,18 @@
 {
   "name": "vscode-packer-powertools",
   "displayName": "Packer Powertools",
-  "description": "Packer file formatting and inline validation",
+  "description": "Packer file formatting, inline validation, commands, syntax highlighting, and code folding",
   "version": "0.1.0",
   "engines": {
     "vscode": "^1.66.0"
   },
+  "license": "SEE LICENSE IN LICENSE file",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szTheory/vscode-packer-powertools"
+  },
+  "homepage": "https://github.com/szTheory/vscode-packer-powertools",
+  "icon": "images/icon.png",
   "categories": [
     "Formatters",
     "Linters",
