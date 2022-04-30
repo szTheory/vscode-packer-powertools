@@ -27,7 +27,7 @@ export async function build(): Promise<void> {
   terminal.show();
 }
 
-export async function inpsect(): Promise<void> {
+export async function inspect(): Promise<void> {
   // get active text editor
   const activeTextEditor = vscode.window.activeTextEditor;
   if (!activeTextEditor) {
