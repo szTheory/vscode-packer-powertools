@@ -34,6 +34,10 @@ You must have Packer installed and in your system `PATH`.
 
 ## Release Notes
 
+### 0.2.0
+
+Add `packer inspect` command
+
 ### 0.1.0
 
 Initial release

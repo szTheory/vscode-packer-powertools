@@ -27,6 +27,27 @@ export async function build(): Promise<void> {
   terminal.show();
 }
 
+export async function inpsect(): Promise<void> {
+  // get active text editor
+  const activeTextEditor = vscode.window.activeTextEditor;
+  if (!activeTextEditor) {
+    vscode.window.showWarningMessage(
+      "You have to open a Packer template file to inspect it"
+    );
+    return;
+  }
+
+  // get terminal
+  const terminal = getTerminal();
+
+  // run command
+  const path = activeTextEditor.document.fileName;
+  terminal.sendText(`packer inspect ${path}`);
+
+  // show terminal to see output
+  terminal.show();
+}
+
 function getTerminal(): vscode.Terminal {
   return vscode.window.activeTerminal || vscode.window.createTerminal();
 }
