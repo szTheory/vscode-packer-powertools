@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { TextDocument, TextEdit } from "vscode";
 import { build, init, inspect } from "./command";
+import { hoverProvider } from "./docs";
 import { format } from "./format";
 import { activateValidation } from "./validate";
 
@@ -40,7 +41,18 @@ export function activate(context: vscode.ExtensionContext) {
       await inspect();
     })
   );
+
+  // Hover documentation
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider(DOCUMENT_SELECTOR, hoverProvider)
+  );
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+const DOCUMENT_SELECTOR: vscode.DocumentFilter = {
+  language: "packer",
+  pattern: "**/*.pkr.hcl",
+  scheme: "file",
+};

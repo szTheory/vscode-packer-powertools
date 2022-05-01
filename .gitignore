@@ -3,3 +3,11 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+
+# Where the Packer docs are built automatically
+docsbuild/scratch
+docsbuild/processors/builders/scratch
+
+# Util .ts build files
+util/**/*.js
+util/**/*.js.map
