@@ -4,260 +4,868 @@
   "comment": "Packer HCL",
   "fileTypes": ["pkr.hcl"],
   "patterns": [
-    { "include": "#comments" },
-    { "include": "#constructs" },
-    { "include": "#variable" }
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#attribute_definition"
+    },
+    {
+      "include": "#block"
+    },
+    {
+      "include": "#expressions"
+    }
   ],
   "repository": {
+    "char_escapes": {
+      "match": "\\\\[nrt\"\\\\]|\\\\u(\\h{8}|\\h{4})",
+      "comment": "Character Escapes",
+      "name": "constant.character.escape.packer"
+    },
+    "comma": {
+      "match": "\\,",
+      "comment": "Commas - used in certain expressions",
+      "name": "punctuation.separator.packer"
+    },
+    "language_constants": {
+      "match": "\\b(true|false|null)\\b",
+      "comment": "Language Constants",
+      "name": "constant.language.packer"
+    },
+    "named_value_references": {
+      "match": "\\b(var|local|module|data|path|packer)\\b",
+      "comment": "Constant values available only to packer.",
+      "name": "support.constant.packer"
+    },
+    "local_identifiers": {
+      "match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+      "comment": "Local Identifiers",
+      "name": "variable.other.readwrite.packer"
+    },
+    "packer_type_keywords": {
+      "match": "\\b(any|string|number|bool)\\b",
+      "comment": "Type keywords known to packer.",
+      "name": "storage.type.packer"
+    },
     "comments": {
       "patterns": [
-        {
-          "comment": "Single line comments with number-sign",
-          "match": "(#)+(.*)",
-          "captures": {
-            "0": { "name": "comment.line.number-sign.hcl" }
-          }
+        { "include": "#hash_line_comments" },
+        { "include": "#double_slash_line_comments" },
+        { "include": "#block_inline_comments" }
+      ]
+    },
+    "hash_line_comments": {
+      "name": "comment.line.number-sign.hcl",
+      "comment": "Line comments start with # sequence and end with the next newline sequence. A line comment is considered equivalent to a newline sequence",
+      "begin": "#",
+      "end": "$\\n?",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.packer"
+        }
+      }
+    },
+    "double_slash_line_comments": {
+      "name": "comment.line.double-slash.hcl",
+      "comment": "Line comments start with // sequence and end with the next newline sequence. A line comment is considered equivalent to a newline sequence",
+      "begin": "//",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.packer"
+        }
+      },
+      "end": "$\\n?"
+    },
+    "block_inline_comments": {
+      "name": "comment.block.hcl",
+      "comment": "Inline comments start with the /* sequence and end with the */ sequence, and may have any characters within except the ending sequence. An inline comment is considered equivalent to a whitespace sequence",
+      "begin": "/\\*",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.packer"
+        }
+      },
+      "end": "\\*/"
+    },
+    "attribute_definition": {
+      "match": "(\\()?((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)(\\))?\\s*(\\=(?!\\=|\\>))\\s*",
+      "comment": "Identifier \"=\" with optional parens",
+      "name": "variable.declaration.packer",
+      "captures": {
+        "1": {
+          "name": "punctuation.section.parens.begin.packer"
         },
-        {
-          "comment": "Single line comments with double-slash",
-          "match": "(//)+(.*)",
-          "captures": {
-            "0": { "name": "comment.line.double-slash.hcl" }
-          }
+        "2": {
+          "name": "variable.other.readwrite.packer"
         },
-        {
-          "comment": "Multiple line comment block",
-          "begin": "/\\*",
-          "beginCaptures": {
-            "0": { "name": "comment.block.documentation.hcl" }
-          },
-          "end": "\\*/",
-          "endCaptures": {
-            "0": { "name": "comment.block.documentation.hcl" }
-          },
-          "contentName": "comment.block.documentation.hcl"
-        }
-      ]
-    },
-    "constructs": {
-      "patterns": [
-        {
-          "begin": "([\\w-]+)\\s*\\{",
-          "beginCaptures": {
-            "0": { "name": "meta.function.hcl" },
-            "1": { "name": "storage.type.hcl" }
-          },
-          "end": "\\}",
-          "patterns": [
-            { "include": "$self" },
-            { "include": "#comments" },
-            { "include": "#variable" }
-          ]
+        "3": {
+          "name": "punctuation.section.parens.end.packer"
         },
-        {
-          "begin": "([\\w-]+)((?:\\s*\"[^\"]*\")*)\\s*\\{",
-          "beginCaptures": {
-            "0": { "name": "meta.function.hcl" },
-            "1": { "name": "storage.type.hcl" },
-            "2": { "name": "string.quoted.double.hcl" }
-          },
-          "end": "\\}",
-          "patterns": [
-            { "include": "$self" },
-            { "include": "#comments" },
-            { "include": "#variable" }
-          ]
+        "4": {
+          "name": "keyword.operator.assignment.packer"
         }
-      ]
+      }
     },
-    "variable": {
-      "patterns": [
-        {
-          "begin": "([\\w\\.-]+)\\s*(=)\\s*",
-          "beginCaptures": {
-            "1": { "name": "variable.parameter.hcl" },
-            "2": { "name": "keyword.operator.hcl" }
-          },
-          "end": "(?<!\\2)$",
-          "endCaptures": {
-            "0": { "name": "keyword.operator.hcl" }
-          },
+    "block": {
+      "name": "meta.block.packer",
+      "comment": "This will match packer blocks like `resource \"aws_instance\" \"web\" {` or `module {`",
+      "begin": "(\\w+)([\\s\\\"\\-\\w]*)(\\{)",
+      "beginCaptures": {
+        "1": {
           "patterns": [
-            { "include": "#variable-type-string" },
-            { "include": "#variable-type-heredoc" },
-            { "include": "#variable-type-hexadecimal" },
-            { "include": "#variable-type-decimal" },
-            { "include": "#variable-type-constant" },
-            { "include": "#variable-type-array" },
-            { "include": "#variable-type-map" }
-          ]
-        }
-      ]
-    },
-    "variable-interpolation": {
-      "patterns": [
-        {
-          "begin": "\\$\\{",
-          "beginCaptures": {
-            "0": { "name": "keyword.operator.hcl" }
-          },
-          "end": "\\}",
-          "endCaptures": {
-            "0": { "name": "keyword.operator.hcl" }
-          },
-          "patterns": [
-            { "include": "#variable-interpolation-function" },
-            { "include": "#variable-interpolation-reference" }
-          ]
-        }
-      ]
-    },
-    "variable-interpolation-function": {
-      "patterns": [
-        {
-          "begin": "([\\w-]+)\\(",
-          "beginCaptures": {
-            "1": { "name": "entity.name.function.hcl" }
-          },
-          "end": "\\)",
-          "patterns": [
-            { "include": "#variable-interpolation-function" },
-            { "include": "#variable-interpolation-reference" },
-            { "include": "#variable-type-hexadecimal" },
-            { "include": "#variable-type-decimal" },
-            { "include": "#variable-type-constant" },
-            { "include": "#variable-type-string" }
-          ]
-        }
-      ]
-    },
-    "variable-interpolation-reference": {
-      "patterns": [
-        {
-          "match": "\\b([\\w-]+)((\\.[\\w-]+)*)\\b",
-          "captures": {
-            "1": { "name": "storage.modifier.hcl" },
-            "2": { "name": "entity.name.type.hcl" }
-          }
-        }
-      ]
-    },
-    "variable-type-array": {
-      "patterns": [
-        {
-          "begin": "\\[",
-          "end": "\\]",
-          "patterns": [
-            { "include": "#variable-type-decimal" },
-            { "include": "#variable-type-hexadecimal" },
-            { "include": "#variable-type-constant" },
-            { "include": "#variable-type-string" },
             {
-              "match": "\\s*,\\s*"
+              "match": "\\bresource|provider|variable|output|locals|module|data|packer\\b",
+              "comment": "Known block type",
+              "name": "entity.name.type.packer"
+            },
+            {
+              "match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+              "comment": "Unknown block type",
+              "name": "entity.name.label.packer"
             }
           ]
+        },
+        "2": {
+          "patterns": [
+            {
+              "name": "variable.other.enummember.packer",
+              "comment": "Block label",
+              "match": "[\\\"\\-\\w]+"
+            }
+          ]
+        },
+        "3": {
+          "name": "punctuation.section.block.begin.packer"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.block.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#attribute_definition"
+        },
+        {
+          "include": "#block"
+        },
+        {
+          "include": "#expressions"
         }
       ]
     },
-    "variable-type-map": {
+    "expressions": {
       "patterns": [
         {
-          "begin": "\\{",
-          "end": "\\}",
-          "patterns": [
-            {
-              "begin": "(\"[\\w\\s\\.-]+\")\\s*(:)",
-              "beginCaptures": {
-                "1": { "name": "string.quoted.double.hcl" },
-                "2": { "name": "keyword.operator.hcl" }
-              },
-              "end": "(?<!\\2)\\s*($|(?=\\}))",
-              "endCaptures": {
-                "0": { "name": "keyword.operator.hcl" }
-              },
+          "include": "#literal_values"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#tuple_for_expression"
+        },
+        {
+          "include": "#object_for_expression"
+        },
+        {
+          "include": "#brackets"
+        },
+        {
+          "include": "#objects"
+        },
+        {
+          "include": "#attribute_access"
+        },
+        {
+          "include": "#structural_types"
+        },
+        {
+          "include": "#functions"
+        },
+        {
+          "include": "#parens"
+        }
+      ]
+    },
+    "literal_values": {
+      "patterns": [
+        {
+          "include": "#numeric_literals"
+        },
+        {
+          "include": "#language_constants"
+        },
+        {
+          "include": "#string_literals"
+        },
+        {
+          "include": "#heredoc"
+        },
+        {
+          "include": "#packer_type_keywords"
+        },
+        {
+          "include": "#named_value_references"
+        }
+      ]
+    },
+    "numeric_literals": {
+      "patterns": [
+        {
+          "match": "\\b\\d+([Ee][+-]?)\\d+\\b",
+          "comment": "Integer, no fraction, optional exponent",
+          "name": "constant.numeric.float.packer",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.exponent.packer"
+            }
+          }
+        },
+        {
+          "match": "\\b\\d+(\\.)\\d+(?:([Ee][+-]?)\\d+)?\\b",
+          "comment": "Integer, fraction, optional exponent",
+          "name": "constant.numeric.float.packer",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.decimal.packer"
+            },
+            "2": {
+              "name": "punctuation.separator.exponent.packer"
+            }
+          }
+        },
+        {
+          "match": "\\b\\d+\\b",
+          "comment": "Integers",
+          "name": "constant.numeric.integer.packer"
+        }
+      ]
+    },
+    "string_literals": {
+      "begin": "\"",
+      "comment": "Strings",
+      "name": "string.quoted.double.packer",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.packer"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#string_interpolation"
+        },
+        {
+          "include": "#char_escapes"
+        }
+      ]
+    },
+    "string_interpolation": {
+      "begin": "(\\G|[^%$])([%$]{)",
+      "comment": "String interpolation",
+      "name": "meta.interpolation.packer",
+      "beginCaptures": {
+        "2": {
+          "name": "keyword.other.interpolation.begin.packer"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "keyword.other.interpolation.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\~\\s",
+          "comment": "Trim left whitespace",
+          "name": "keyword.operator.template.left.trim.packer"
+        },
+        {
+          "match": "\\s\\~",
+          "comment": "Trim right whitespace",
+          "name": "keyword.operator.template.right.trim.packer"
+        },
+        {
+          "match": "\\b(if|else|endif|for|in|endfor)\\b",
+          "comment": "if/else/endif and for/in/endfor directives",
+          "name": "keyword.control.packer"
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#local_identifiers"
+        }
+      ]
+    },
+    "heredoc": {
+      "begin": "(\\<\\<\\-?)\\s*(\\w+)\\s*$",
+      "comment": "String Heredoc",
+      "name": "string.unquoted.heredoc.packer",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.heredoc.packer"
+        },
+        "2": {
+          "name": "keyword.control.heredoc.packer"
+        }
+      },
+      "end": "^\\s*\\2\\s*$",
+      "endCaptures": {
+        "0": {
+          "comment": "The heredoc token identifier (second capture above).",
+          "name": "keyword.control.heredoc.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#string_interpolation"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "\\>\\=",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\<\\=",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\=\\=",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\!\\=",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\+",
+          "name": "keyword.operator.arithmetic.packer"
+        },
+        {
+          "match": "\\-",
+          "name": "keyword.operator.arithmetic.packer"
+        },
+        {
+          "match": "\\*",
+          "name": "keyword.operator.arithmetic.packer"
+        },
+        {
+          "match": "\\/",
+          "name": "keyword.operator.arithmetic.packer"
+        },
+        {
+          "match": "\\%",
+          "name": "keyword.operator.arithmetic.packer"
+        },
+        {
+          "match": "\\&\\&",
+          "name": "keyword.operator.logical.packer"
+        },
+        {
+          "match": "\\|\\|",
+          "name": "keyword.operator.logical.packer"
+        },
+        {
+          "match": "\\!",
+          "name": "keyword.operator.logical.packer"
+        },
+        {
+          "match": "\\>",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\<",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\?",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\.\\.\\.",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "match": "\\:",
+          "scope": "keyword.operator.packer"
+        }
+      ]
+    },
+    "brackets": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.begin.packer"
+        }
+      },
+      "end": "(\\*?)\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.end.packer"
+        },
+        "1": {
+          "name": "keyword.operator.splat.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#inline_for_expression"
+        },
+        {
+          "include": "#inline_if_expression"
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#local_identifiers"
+        }
+      ]
+    },
+    "objects": {
+      "name": "meta.braces.packer",
+      "begin": "\\{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.braces.begin.packer"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.braces.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#objects"
+        },
+        {
+          "include": "#inline_for_expression"
+        },
+        {
+          "include": "#inline_if_expression"
+        },
+        {
+          "match": "\\b((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=\\>?)\\s*",
+          "comment": "Literal, named object key",
+          "captures": {
+            "1": {
+              "name": "meta.mapping.key.packer variable.other.readwrite.packer"
+            },
+            "2": {
+              "name": "keyword.operator.assignment.packer",
               "patterns": [
-                { "include": "#variable-type-decimal" },
-                { "include": "#variable-type-hexadecimal" },
-                { "include": "#variable-type-constant" },
-                { "include": "#variable-type-string" },
                 {
-                  "match": "\\s*,\\s*"
+                  "match": "\\=\\>",
+                  "name": "storage.type.function.packer"
                 }
               ]
             }
-          ]
-        }
-      ]
-    },
-    "variable-type-hexadecimal": {
-      "patterns": [
-        {
-          "comment": "Numbers in hexadecimal with optional suffixes",
-          "match": "0x[0-9A-Fa-f]+([kKmMgG]b?)?",
-          "captures": {
-            "0": { "name": "constant.numeric.hcl" }
           }
-        }
-      ]
-    },
-    "variable-type-decimal": {
-      "patterns": [
+        },
         {
-          "comment": "Numbers in decimal with optional suffixes",
-          "match": "\\b[0-9\\.]+([kKmMgG]b?)?\\b",
+          "match": "\\b((\").*(\"))\\s*(\\=)\\s*",
+          "comment": "String object key",
           "captures": {
-            "0": { "name": "constant.numeric.hcl" }
+            "0": {
+              "patterns": [
+                {
+                  "include": "#named_value_references"
+                }
+              ]
+            },
+            "1": {
+              "name": "meta.mapping.key.packer string.quoted.double.packer"
+            },
+            "2": {
+              "name": "punctuation.definition.string.begin.packer"
+            },
+            "3": {
+              "name": "punctuation.definition.string.end.packer"
+            },
+            "4": {
+              "name": "keyword.operator.packer"
+            }
           }
-        }
-      ]
-    },
-    "variable-type-constant": {
-      "patterns": [
+        },
         {
-          "match": "\\b(true|false|yes|no|on|off)\\b",
-          "captures": {
-            "0": { "name": "constant.numeric.hcl" }
-          }
-        }
-      ]
-    },
-    "variable-type-string": {
-      "patterns": [
-        {
-          "comment": "Usual string",
-          "begin": "\"",
+          "begin": "^\\s*\\(",
+          "comment": "Computed object key (any expression between parens)",
+          "name": "meta.mapping.key.packer",
           "beginCaptures": {
-            "0": { "name": "string.quoted.double.hcl" }
+            "0": {
+              "name": "punctuation.section.parens.begin.packer"
+            }
           },
-          "end": "\"",
+          "end": "(\\))\\s*(\\=)\\s*",
           "endCaptures": {
-            "0": { "name": "string.quoted.double.hcl" }
+            "1": {
+              "name": "punctuation.section.parens.end.packer"
+            },
+            "2": {
+              "name": "keyword.operator.packer"
+            }
           },
           "patterns": [
-            { "include": "#variable-interpolation" },
             {
-              "match": "[^\"]",
+              "include": "#named_value_references"
+            },
+            {
+              "include": "#attribute_access"
+            }
+          ]
+        },
+        {
+          "include": "#object_key_values"
+        }
+      ]
+    },
+    "object_key_values": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#literal_values"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#tuple_for_expression"
+        },
+        {
+          "include": "#object_for_expression"
+        },
+        {
+          "include": "#heredoc"
+        },
+        {
+          "include": "#functions"
+        }
+      ]
+    },
+    "tuple_for_expression": {
+      "begin": "(\\[)\\s?(for)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.brackets.begin.packer"
+        },
+        "2": {
+          "comment": "for expression (tuple)",
+          "name": "keyword.control.packer"
+        }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#for_expression_body"
+        }
+      ]
+    },
+    "object_for_expression": {
+      "begin": "(\\{)\\s?(for)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.braces.begin.packer"
+        },
+        "2": {
+          "comment": "for expression (object)",
+          "name": "keyword.control.packer"
+        }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.braces.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\=\\>",
+          "name": "storage.type.function.packer"
+        },
+        {
+          "include": "#for_expression_body"
+        }
+      ]
+    },
+    "inline_for_expression": {
+      "begin": "(for)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.packer"
+        }
+      },
+      "end": "\\n",
+      "patterns": [
+        {
+          "match": "\\=\\>",
+          "name": "storage.type.function.packer"
+        },
+        {
+          "include": "#for_expression_body"
+        }
+      ]
+    },
+    "inline_if_expression": {
+      "begin": "(if)\\b",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.conditional.packer"
+        }
+      },
+      "end": "\\n",
+      "patterns": [
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#local_identifiers"
+        }
+      ]
+    },
+    "for_expression_body": {
+      "patterns": [
+        {
+          "match": "\\bin\\b",
+          "comment": "in keyword",
+          "name": "keyword.operator.word.packer"
+        },
+        {
+          "match": "\\bif\\b",
+          "comment": "if keyword",
+          "name": "keyword.control.conditional.packer"
+        },
+        {
+          "match": "\\:",
+          "name": "keyword.operator.packer"
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#local_identifiers"
+        }
+      ]
+    },
+    "attribute_access": {
+      "begin": "\\.",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.operator.accessor.packer"
+        }
+      },
+      "end": "[[:alpha:]][[:alnum:]_-]*(\\[[0-9\\*]+\\])?",
+      "comment": "Matches a variable with an optional splat or index ([*]/[0])",
+      "endCaptures": {
+        "0": {
+          "patterns": [
+            {
+              "match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+              "comment": "Attribute name including - and _",
+              "name": "variable.other.member.packer"
+            },
+            {
+              "match": "\\d+",
+              "comment": "Optional attribute index",
+              "name": "constant.numeric.integer.packer"
+            },
+            {
+              "match": "\\*",
+              "comment": "Optional attribute-only splat",
+              "name": "keyword.operator.splat.packer"
+            }
+          ]
+        }
+      }
+    },
+    "structural_types": {
+      "patterns": [
+        {
+          "begin": "(object)(\\()(\\{)\\s*",
+          "name": "meta.function-call.packer",
+          "comment": "Object structural type",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.builtin.packer"
+            },
+            "2": {
+              "name": "punctuation.section.parens.begin.packer"
+            },
+            "3": {
+              "name": "punctuation.section.braces.begin.packer"
+            }
+          },
+          "end": "(\\})(\\))",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.section.braces.end.packer"
+            },
+            "2": {
+              "name": "punctuation.section.parens.end.packer"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "match": "((?!null|false|true)[[:alpha:]][[:alnum:]_-]*)\\s*(\\=(?!\\=|\\>))\\s*",
+              "comment": "Identifier \"=\"",
+              "name": "variable.declaration.packer",
               "captures": {
-                "0": { "name": "string.quoted.double.hcl" }
+                "1": {
+                  "name": "variable.other.readwrite.packer"
+                },
+                "2": {
+                  "name": "keyword.operator.assignment.packer"
+                }
               }
+            },
+            {
+              "include": "#packer_type_keywords"
+            }
+          ]
+        },
+        {
+          "begin": "(tuple)(\\()(\\[)\\s*",
+          "name": "meta.function-call.packer",
+          "comment": "Tuple structural type",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.builtin.packer"
+            },
+            "2": {
+              "name": "punctuation.section.parens.begin.packer"
+            },
+            "3": {
+              "name": "punctuation.section.brackets.begin.packer"
+            }
+          },
+          "end": "(\\])(\\))",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.section.brackets.end.packer"
+            },
+            "2": {
+              "name": "punctuation.section.parens.end.packer"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "include": "#packer_type_keywords"
             }
           ]
         }
       ]
     },
-    "variable-type-heredoc": {
+    "functions": {
+      "begin": "(\\w+)(\\()",
+      "name": "meta.function-call.packer",
+      "comment": "Built-in function calls",
+      "beginCaptures": {
+        "1": {
+          "patterns": [
+            {
+              "match": "abspath|abs|ceil|floor|log|max|min|pow|signum|chomp|formatlist|indent|join|lower|regexall|regex|replace|split|strrev|substr|title|trimspace|upper|chunklist|coalescelist|coalesce|compact|concat|contains|distinct|element|flatten|index|keys|length|lookup|matchkeys|merge|range|reverse|setintersection|setproduct|setunion|slice|sort|transpose|values|zipmap|base64decode|base64encode|base64gzip|csvdecode|jsondecode|jsonencode|urlencode|yamldecode|yamlencode|dirname|pathexpand|basename|fileexists|fileset|filebase64|templatefile|formatdate|timeadd|timestamp|base64sha256|base64sha512|bcrypt|filebase64sha256|filebase64sha512|filemd5|filemd1|filesha256|filesha512|md5|rsadecrypt|sha1|sha256|sha512|uuidv5|uuid|cidrhost|cidrnetmask|cidrsubnet|tobool|tolist|tomap|tonumber|toset|tostring|file|format|map|list",
+              "name": "support.function.builtin.packer"
+            },
+            {
+              "match": "\\b(?!null|false|true)[[:alpha:]][[:alnum:]_-]*\\b",
+              "name": "variable.function.packer"
+            }
+          ]
+        },
+        "2": {
+          "name": "punctuation.section.parens.begin.packer"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.packer"
+        }
+      },
       "patterns": [
         {
-          "comment": "Heredoc string",
-          "begin": "<<(\\w+)",
-          "beginCaptures": {
-            "0": { "name": "entity.name.section" }
-          },
-          "end": "^\\s*\\1$",
-          "endCaptures": {
-            "0": { "name": "entity.name.section" }
-          },
-          "contentName": "string.unquoted.here-doc.hcl"
+          "include": "#comments"
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#comma"
+        }
+      ]
+    },
+    "parens": {
+      "begin": "\\(",
+      "comment": "Parens - matched *after* function syntax",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.begin.packer"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.packer"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expressions"
+        },
+        {
+          "include": "#local_identifiers"
         }
       ]
     }

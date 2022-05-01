@@ -40,8 +40,9 @@ You must have Packer installed and in your system `PATH`.
 
 ### 0.2.0
 
-Add `packer inspect` command
+- Add `packer inspect` command
+- Update syntax highlighting to look the same as the official Terraform plugin
 
 ### 0.1.0
 
-Initial release
+- Initial release
