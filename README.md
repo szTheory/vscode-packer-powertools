@@ -38,6 +38,10 @@ You must have Packer installed and in your system `PATH`.
 
 ## Release Notes
 
+### 0.3.0
+
+- Update to the latest syntax highlighting file from the [HashiCorp Syntax](https://github.com/hashicorp/syntax) repo
+
 ### 0.2.0
 
 - Add `packer inspect` command

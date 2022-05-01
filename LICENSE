@@ -10,8 +10,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 ---
 
-Includes language configuration and grammar files from Terraform vs code extension from https://github.com/hashicorp/vscode-terraform/blob/main/language-configuration.json
-with the following license:
+Includes the language configuration file from the Terraform VS Code extension at https://github.com/hashicorp/vscode-terraform/blob/main/language-configuration.json and the HCL syntax file from HashiCorp Syntax at https://github.com/hashicorp/syntax with the following license:
 
 Mozilla Public License, version 2.0
 
