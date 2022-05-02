@@ -1,0 +1,8 @@
+{
+  "required_version": {
+    "description": "The `required_version` setting accepts a version constraint string, which specifies which versions of Packer can be used with your configuration.\n\nIf the running version of Packer doesn't match the constraints specified, Packer will produce an error and exit without taking any further actions.\n\nUse Packer version constraints in a collaborative environment to ensure that everyone is using a specific Packer version, or using at least a minimum Packer version that has behavior expected by the configuration.",
+    "required": false,
+    "type": "version constraint string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/packer#version-constraint-syntax"
+  }
+}

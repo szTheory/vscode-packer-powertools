@@ -1,0 +1,8 @@
+{
+  "name": {
+    "description": "The name of your `source`.",
+    "required": true,
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/source"
+  }
+}

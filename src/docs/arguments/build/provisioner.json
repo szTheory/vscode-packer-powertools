@@ -2,31 +2,37 @@
   "only": {
     "description": "You can use the `only` or `except` configurations to run a provisioner only with specific sources. These two configurations do what you expect: `only` will only run the provisioner on the specified sources and `except` will run the provisioner on anything other than the specified sources.\n\nThe values within `only` or `except` are _source names_, not builder types nor build names.",
     "required": false,
+    "type": "list of sources",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#run-on-specific-sources"
   },
   "except": {
     "description": "You can use the `only` or `except` configurations to run a provisioner only with specific sources. These two configurations do what you expect: `only` will only run the provisioner on the specified sources and `except` will run the provisioner on anything other than the specified sources.\n\nThe values within `only` or `except` are _source names_, not builder types nor build names.",
     "required": false,
+    "type": "list of sources",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#run-on-specific-sources"
   },
   "override": {
     "description": "While the goal of Packer is to produce identical machine images, it sometimes requires periods of time where the machines are different before they eventually converge to be identical. In these cases, different configurations for provisioners may be necessary depending on the build. This can be done using build-specific overrides with the `override` key.\n\nThe value of this key is another HCL attribute map where the key is the name of a builder definition. The value of this is in turn another HCL attribute map. This HCL attribute map simply contains the provisioner configuration as normal. This configuration is merged into the default provisioner configuration.",
     "required": false,
+    "type": "HCL attribute map where the key is the name of a builder definition",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#build-specific-overrides"
   },
   "pause_before": {
     "description": "With certain provisioners it is sometimes desirable to pause for some period of time before running it. Specifically, in cases where a provisioner reboots the machine, you may want to wait for some period of time before starting the next provisioner.\n\nEvery provisioner definition in a Packer template can take a special configuration `pause_before` that is the amount of time to pause before running that provisioner. By default, there is no pause.",
     "required": false,
+    "type": "time string",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#pausing-before-running"
   },
   "max_retries": {
     "description": "With certain provisioners it is sometimes desirable to retry when it fails. Specifically, in cases where the provisioner depends on external processes that are not done yet.\n\nEvery provisioner definition in a Packer template can take a special configuration `max_retries` that is the maximum number of times a provisioner will retry on error. By default, there `max_retries` is zero and there is no retry on error.",
     "required": false,
+    "type": "number",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#retry-on-error"
   },
   "timeout": {
     "description": "Sometimes a command can take much more time than expected.\n\nEvery provisioner definition in a Packer template can take a special configuration `timeout` that is the amount of time to wait before considering that the provisioner failed. By default, there is no timeout. Timeout has no effect in debug mode.",
     "required": false,
+    "type": "time string",
     "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#timeout"
   }
 }

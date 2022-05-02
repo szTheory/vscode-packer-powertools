@@ -1,0 +1,14 @@
+{
+  "keep_input_artifact": {
+    "description": "To prevent an input artifact from being deleted, you can set the `keep_input_artifact` field to true to make Packer keep both artifacts.",
+    "required": false,
+    "type": "boolean",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner#run-on-specific-sources"
+  },
+  "only": {
+    "description": "You can use the `only` or `except` configurations to run a post-processor only with specific sources. These two configurations do what you expect: `only` will only run the post-processor on the specified sources and `except` will run the post-processor on anything other than the specified sources.\n\nThe values within `only` or `except` are _source names_, not builder types.",
+    "required": false,
+    "type": "list of sources",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/post-processor#run-on-specific-builds"
+  }
+}

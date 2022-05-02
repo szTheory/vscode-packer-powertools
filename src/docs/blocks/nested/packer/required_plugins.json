@@ -1,4 +1,4 @@
 {
-  "description": "The `required_plugins` block specifies all of the plugins required by the current config, mapping each local plugin name to a source address and a version constraint.",
+  "description": "The `required_plugins` block specifies all of the plugins required by the current config, mapping each local plugin name to a source address and a version constraint.\n\nNote: The `required_plugins` block is only available in Packer v1.7.0 and later.",
   "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/packer#specifying-plugin-requirements"
 }

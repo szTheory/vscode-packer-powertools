@@ -28,7 +28,10 @@ import * as block_nested_variable_validation from "./docs/blocks/nested/variable
 import * as arguments_build from "./docs/arguments/build.json";
 import * as arguments_build_hcr_packer_registry from "./docs/arguments/build/hcr_packer_registry.json";
 import * as arguments_build_provisioner from "./docs/arguments/build/provisioner.json";
+import * as arguments_build_post_processor from "./docs/arguments/build/post-processor.json";
+import * as arguments_build_source from "./docs/arguments/build/source.json";
 import * as arguments_local from "./docs/arguments/local.json";
+import * as arguments_packer from "./docs/arguments/packer.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
@@ -333,8 +336,14 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
       return (arguments_build_hcr_packer_registry as any)[argumentName];
     case "local":
       return (arguments_local as any)[argumentName];
+    case "packer":
+      return (arguments_packer as any)[argumentName];
     case "provisioner":
       return (arguments_build_provisioner as any)[argumentName];
+    case "post-processor":
+      return (arguments_build_post_processor as any)[argumentName];
+    case "source":
+      return (arguments_build_source as any)[argumentName];
     case "variable":
       return (arguments_variable as any)[argumentName];
     case "validation":
