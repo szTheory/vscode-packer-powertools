@@ -1,0 +1,4 @@
+{
+  "description": "The `local` block defines exactly one local variable within a folder. The block label is the name of the local, and the \"expression\" is the expression that should be evaluated to create the local. Using this block, you can optionally supply a \"sensitive\" boolean to mark the variable as sensitive and filter it from logs.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/locals#single-local-block"
+}

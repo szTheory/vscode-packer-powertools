@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import * as block_build from "./docs/blocks/build.json";
 import * as block_data from "./docs/blocks/data.json";
 import * as block_locals from "./docs/blocks/locals.json";
+import * as block_local from "./docs/blocks/local.json";
 import * as block_packer from "./docs/blocks/packer.json";
 import * as block_source from "./docs/blocks/source.json";
 import * as block_variable from "./docs/blocks/variable.json";
@@ -22,6 +23,7 @@ import * as block_nested_build_packer_required_plugins from "./docs/blocks/neste
 import * as block_nested_variable_validation from "./docs/blocks/nested/variable/validation.json";
 
 // Arguments
+import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
@@ -280,6 +282,8 @@ function getBlockJSON(blockName: string): Block {
       return block_build;
     case "data":
       return block_data;
+    case "local":
+      return block_local;
     case "locals":
       return block_locals;
     case "packer":
@@ -309,6 +313,8 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
   }
 
   switch (blockName) {
+    case "local":
+      return (arguments_local as any)[argumentName];
     case "variable":
       return (arguments_variable as any)[argumentName];
     case "validation":

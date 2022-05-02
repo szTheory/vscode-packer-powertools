@@ -1,0 +1,12 @@
+{
+  "expression": {
+    "description": "The expression that should be evaluated to create the local. It can refer to other locals, but reference cycles are not allowed. That is, a local cannot refer to itself or to a variable that refers (directly or indirectly) back to it.",
+    "required": true,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/locals#single-local-block"
+  },
+  "sensitive": {
+    "description": "You can optionally supply a `sensitive` boolean to mark the variable as sensitive and filter it from logs.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/locals#single-local-block"
+  }
+}
