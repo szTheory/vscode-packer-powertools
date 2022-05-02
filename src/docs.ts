@@ -25,6 +25,7 @@ import * as block_nested_variable_validation from "./docs/blocks/nested/variable
 
 // Arguments
 import * as arguments_build from "./docs/arguments/build.json";
+import * as arguments_build_hcr_packer_registry from "./docs/arguments/build/hcr_packer_registry.json";
 import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
@@ -76,8 +77,11 @@ function provideHover(
         }
         const json = getArgumentJSON(parentBlockType.name, word);
         const requiredText = json.required ? "required" : "optional";
+        const secondaryText = [requiredText, json.type]
+          .filter((x) => x)
+          .join(", ");
         const wordMarkdown = json.url ? `[${word}](${json.url})` : word;
-        const markdown = `**${wordMarkdown}** *${requiredText}* \n\n${json.description}`;
+        const markdown = `**${wordMarkdown}** *${secondaryText}* \n\n${json.description}`;
         resolve(new vscode.Hover(markdown));
 
         // Or is it something to the right of the = symbol?
@@ -307,6 +311,7 @@ function getBlockJSON(blockName: string): Block {
 interface Argument {
   description: string;
   required: boolean;
+  type?: string;
   url?: string;
 }
 
@@ -316,9 +321,12 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
     argumentName = "defaultArg";
   }
 
+  // TODO: handle double nested blocks
   switch (blockName) {
     case "build":
       return (arguments_build as any)[argumentName];
+    case "hcp_packer_registry":
+      return (arguments_build_hcr_packer_registry as any)[argumentName];
     case "local":
       return (arguments_local as any)[argumentName];
     case "variable":

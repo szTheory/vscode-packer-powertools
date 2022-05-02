@@ -1,0 +1,32 @@
+{
+  "bucket_name": {
+    "description": "The image name when published to the HCP Packer registry. Should always be the same, otherwise a new image will be created. Defaults to `build.name` if not set. Will be overwritten if `HCP_PACKER_BUCKET_NAME` is set.",
+    "required": false,
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry#usage"
+  },
+  "bucket_labels": {
+    "description": "Map of labels. Can provide any information, such as tools versions (e.g. go 1.17, python 3.5, etc...). The bucket labels will appear at the image's main page and will be updated whenever it is changed and a new iteration for the bucket is pushed to the HCP Packer registry",
+    "required": false,
+    "type": "map[string]string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry#usage"
+  },
+  "build_labels": {
+    "description": "Map of labels. Can provide any information, such as tools versions (e.g. go 1.17, python 3.5, etc...). The build labels will appear in the build section of an iteration. Build labels are specific to an iteration and will be added to a build when is pushed to the HCP Packer registry. Updates to build labels on a completed iteration is not allowed.",
+    "required": false,
+    "type": "map[string]string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry#usage"
+  },
+  "description": {
+    "description": "The image description. Useful to provide a summary about the image. The description will appear at the image's main page and will be updated whenever it is changed and a new build is pushed to the HCP Packer registry. Should contain a maximum of 255 characters. Defaults to `build.description` if not set.",
+    "required": false,
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry#usage"
+  },
+  "labels": {
+    "description": "Deprecated in Packer 1.7.9. See `bucket_labels` for details",
+    "required": false,
+    "type": "map[string]string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry#usage"
+  }
+}
