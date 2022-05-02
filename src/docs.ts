@@ -12,6 +12,7 @@ import * as block_variables from "./docs/blocks/variables.json";
 
 // Nested blocks - build
 import * as block_nested_build_hcp_packer_registry from "./docs/blocks/nested/build/hcp_packer_registry.json";
+import * as block_nested_build_post_processor from "./docs/blocks/nested/build/post-processor.json";
 import * as block_nested_build_post_processors from "./docs/blocks/nested/build/post-processors.json";
 import * as block_nested_build_provisioner from "./docs/blocks/nested/build/provisioner.json";
 import * as block_nested_build_source from "./docs/blocks/nested/build/source.json";
@@ -23,6 +24,7 @@ import * as block_nested_build_packer_required_plugins from "./docs/blocks/neste
 import * as block_nested_variable_validation from "./docs/blocks/nested/variable/validation.json";
 
 // Arguments
+import * as arguments_build from "./docs/arguments/build.json";
 import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
@@ -237,6 +239,8 @@ function getNestedBlockJSON(blockName: string, parentBlockName: string): Block {
       switch (blockName) {
         case "hcp_packer_registry":
           return block_nested_build_hcp_packer_registry;
+        case "post-processor":
+          return block_nested_build_post_processor;
         case "post-processors":
           return block_nested_build_post_processors;
         case "provisioner":
@@ -313,6 +317,8 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
   }
 
   switch (blockName) {
+    case "build":
+      return (arguments_build as any)[argumentName];
     case "local":
       return (arguments_local as any)[argumentName];
     case "variable":

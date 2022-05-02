@@ -1,0 +1,82 @@
+{
+  "communicator": {
+    "description": "Communicators are the mechanism Packer uses to upload files, execute scripts, etc. with the machine being created. They are configured within the builder section. Packer currently supports three kinds of communicators:\n\n- `none` - No communicator will be used. If this is set, most provisioners also can't be used.\n- `ssh` - An SSH connection will be established to the machine. This is usually the default.\n- `winrm` - A WinRM connection will be established.",
+    "required": false,
+    "url": "https://www.packer.io/docs/communicators"
+  },
+  "sources": {
+    "description": "You can set `sources` to an array of strings with references to pre-defined sources as an alternative to defining build-level `source` blocks.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build#the-build-block"
+  },
+  "name": {
+    "description": "Represents the name of the build block being run. This is different than the name of the source block being run.",
+    "required": true,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "ID": {
+    "description": "Represents the vm being provisioned. For example, in Amazon it is the instance id; in digitalocean, it is the droplet id; in Vmware, it is the vm name.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "Host": {
+    "description": "The host that Packer uses to access the machine. Useful for using the shell local provisioner to run Ansible or Inspec against the provisioned instance.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "Port": {
+    "description": "The port that Packer uses to access the machine. Useful for using the shell local provisioner to run Ansible or Inspec against the provisioned instance.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "User": {
+    "description": "The user that Packer uses to access the machine. Useful for using the shell local provisioner to run Ansible or Inspec against the provisioned instance.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "Password": {
+    "description": "The password that Packer uses to access the machine. Useful for using the shell local provisioner to run Ansible or Inspec against the provisioned instance.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "ConnType": {
+    "description": "Type of communicator being used. For example, for SSH communicator this will be \"ssh\".",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "PackerRunUUID": {
+    "description": "Current build's unique id. Can be used to specify build artifacts. An example of that, is when multiple builds runs at the same time producing the same artifact. It's possible to differentiate these artifacts by naming them with the builds' unique ids.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "PackerHTTPIP": {
+    "description": "HTTP IP address of the file server Packer creates to serve items in the \"http\" dir to the vm. The HTTP address is displayed in the format `IP:PORT`.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "PackerHTTPPort": {
+    "description": "HTTP port of the file server Packer creates to serve items in the \"http\" dir to the vm. The HTTP address is displayed in the format `IP:PORT`.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "PackerHTTPAddr": {
+    "description": "HTTP address of the file server Packer creates to serve items in the \"http\" dir to the vm. The HTTP address is displayed in the format `IP:PORT`.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "SSHPublicKey": {
+    "description": "The public key that Packer uses to connect to the instance. These are unique to the SSH communicator and are unset when using other communicators. **SSHPublicKey** and **SSHPrivateKey** can have escape sequences and special characters so their output should be single quoted to avoid surprises.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "SSHPrivateKey": {
+    "description": "The private key that Packer uses to connect to the instance. These are unique to the SSH communicator and are unset when using other communicators. **SSHPublicKey** and **SSHPrivateKey** can have escape sequences and special characters so their output should be single quoted to avoid surprises.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  },
+  "WinRMPassword": {
+    "description": "For backwards compatibility, `WinRMPassword` is also available through this engine, though it is no different than using the more general `Password`.",
+    "required": false,
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#build-variables"
+  }
+}

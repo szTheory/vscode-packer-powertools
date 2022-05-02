@@ -1,0 +1,4 @@
+{
+  "description": "The `post-processor` block defines how a post-processor is configured.\n\nEach `post-processor` runs after each defined build. A post-processor takes the `Artifact` from a build. Post-processors are optional, and they can be used to upload artifacts, re-package, or more. The list of available post-processors can be found in the post-processors section.\n\nA `post-processor` can also take the `Artifact` from another post-processor when it is defined in a `post-processors` block list, that is a list of chained post processors.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/post-processor#the-post-processor-block"
+}
