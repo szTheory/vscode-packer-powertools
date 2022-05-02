@@ -1,4 +1,4 @@
 {
-  "description": "A `source` block nested in a `build` block allows you to use an already defined source and to \"fill in\" those fields _which aren't already set in the top-level source block_.",
+  "description": "A `source` block nested in a `build` block allows you to use an already defined source and to \"fill in\" those fields _which aren't already set in the top-level source block_.\n\nThey are implemented by merging their contents with the corresponding top-level source block, and a packer build will fail when it encounters the ambiguity that arises when a source parameter is defined twice.",
   "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/source"
 }

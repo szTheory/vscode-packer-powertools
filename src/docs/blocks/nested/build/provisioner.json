@@ -1,4 +1,4 @@
 {
-  "description": "The `provisioner` block defines how a provisioner is configured.\n\nProvisioners use builtin and third-party software to install and configure the machine image after booting. Provisioners prepare the system for use.",
+  "description": "The `provisioner` block defines how a provisioner is configured. Provisioners use builtin and third-party software to install and configure the machine image after booting. They prepare the system for use.",
   "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/provisioner"
 }

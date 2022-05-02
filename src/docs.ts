@@ -12,6 +12,7 @@ import * as block_variables from "./docs/blocks/variables.json";
 
 // Nested blocks - build
 import * as block_nested_build_hcp_packer_registry from "./docs/blocks/nested/build/hcp_packer_registry.json";
+import * as block_nested_build_error_cleanup_provisioner from "./docs/blocks/nested/build/error-cleanup-provisioner.json";
 import * as block_nested_build_post_processor from "./docs/blocks/nested/build/post-processor.json";
 import * as block_nested_build_post_processors from "./docs/blocks/nested/build/post-processors.json";
 import * as block_nested_build_provisioner from "./docs/blocks/nested/build/provisioner.json";
@@ -26,6 +27,7 @@ import * as block_nested_variable_validation from "./docs/blocks/nested/variable
 // Arguments
 import * as arguments_build from "./docs/arguments/build.json";
 import * as arguments_build_hcr_packer_registry from "./docs/arguments/build/hcr_packer_registry.json";
+import * as arguments_build_provisioner from "./docs/arguments/build/provisioner.json";
 import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
@@ -243,6 +245,8 @@ function getNestedBlockJSON(blockName: string, parentBlockName: string): Block {
       switch (blockName) {
         case "hcp_packer_registry":
           return block_nested_build_hcp_packer_registry;
+        case "error-cleanup-provisioner":
+          return block_nested_build_error_cleanup_provisioner;
         case "post-processor":
           return block_nested_build_post_processor;
         case "post-processors":
@@ -329,6 +333,8 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
       return (arguments_build_hcr_packer_registry as any)[argumentName];
     case "local":
       return (arguments_local as any)[argumentName];
+    case "provisioner":
+      return (arguments_build_provisioner as any)[argumentName];
     case "variable":
       return (arguments_variable as any)[argumentName];
     case "validation":
