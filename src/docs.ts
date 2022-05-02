@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 // Blocks
 import * as block_build from "./docs/blocks/build.json";
 import * as block_data from "./docs/blocks/data.json";
+import * as block_dynamic from "./docs/blocks/dynamic.json";
 import * as block_locals from "./docs/blocks/locals.json";
 import * as block_local from "./docs/blocks/local.json";
 import * as block_packer from "./docs/blocks/packer.json";
@@ -30,6 +31,7 @@ import * as arguments_build_hcr_packer_registry from "./docs/arguments/build/hcr
 import * as arguments_build_provisioner from "./docs/arguments/build/provisioner.json";
 import * as arguments_build_post_processor from "./docs/arguments/build/post-processor.json";
 import * as arguments_build_source from "./docs/arguments/build/source.json";
+import * as arguments_dynamic from "./docs/arguments/dynamic.json";
 import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_packer from "./docs/arguments/packer.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
@@ -85,7 +87,12 @@ function provideHover(
       if (position.character < equalsSignIndex) {
         console.log("ATTRIBUTE");
 
-        const parentBlockType = findParentBlockType(line, position, document);
+        const parentBlockType = findParentBlockType(
+          word,
+          line,
+          position,
+          document
+        );
         if (!parentBlockType) {
           throw new Error(
             "Could not find parent block type but it should be present for an attribute."
@@ -129,15 +136,14 @@ function provideHover(
         // TODO: determine what is the closest block name it's nested in
         // Is it a nested block?
         if (STARTS_WITH_WHITESPACE_REGEX.test(line.text)) {
-          const parentBlockType = findParentBlockType(line, position, document);
-          if (!parentBlockType) {
-            throw new Error(
-              "There should have been a parent block type at this point in execution"
-            );
-          }
+          const parentBlockType = findParentBlockType(
+            word,
+            line,
+            position,
+            document
+          );
 
-          console.log(`parent block: ${parentBlockType.name}`);
-          const json = getNestedBlockJSON(word, parentBlockType.name);
+          const json = getNestedBlockJSON(word, parentBlockType?.name || null);
           const markdown = `**[${word}](${json.url})** *Block* \n\n${json.description}`;
           resolve(new vscode.Hover(markdown));
 
@@ -186,10 +192,16 @@ interface ParentBlockType {
 }
 
 function findParentBlockType(
+  word: string,
   line: vscode.TextLine,
   position: vscode.Position,
   document: vscode.TextDocument
 ): ParentBlockType | null {
+  // Dynamic blocks can be in any other parent block
+  if (word === "dynamic") {
+    return null;
+  }
+
   const matches = STARTS_WITH_WHITESPACE_REGEX.exec(line.text);
   if (!matches) {
     throw new Error(
@@ -271,8 +283,19 @@ interface Block {
   url: string;
 }
 
-function getNestedBlockJSON(blockName: string, parentBlockName: string): Block {
+function getNestedBlockJSON(
+  blockName: string,
+  parentBlockName: string | null
+): Block {
   switch (parentBlockName) {
+    case null:
+      switch (blockName) {
+        case "dynamic":
+          return block_dynamic;
+        default:
+          throw new Error(`Block not found: ${blockName}`);
+      }
+
     case "build":
       switch (blockName) {
         case "hcp_packer_registry":
@@ -373,6 +396,8 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
       return (arguments_build_post_processor as any)[argumentName];
     case "source":
       return (arguments_build_source as any)[argumentName];
+    case "dynamic":
+      return (arguments_dynamic as any)[argumentName];
     case "variable":
       return (arguments_variable as any)[argumentName];
     case "validation":

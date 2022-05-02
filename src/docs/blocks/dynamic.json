@@ -1,0 +1,4 @@
+{
+  "description": "A `dynamic` block acts much like a `for` expression, but produces nested blocks instead of a complex typed value. It iterates over a given complex value, and generates a nested block for each element of that complex value.\n\nThe label of the dynamic block specifies what kind of nested block to generate.\n\nA dynamic block can only generate arguments for nested blocks that belong to the source type, data source, or provisioner being configured.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/expressions#dynamic-blocks"
+}
