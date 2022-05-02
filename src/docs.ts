@@ -38,6 +38,7 @@ import * as arguments_variable_validation from "./docs/arguments/variable/valida
 // Context vars
 import * as contextvars_build from "./docs/context-variables/build.json";
 import * as contextvars_packer from "./docs/context-variables/packer.json";
+import * as contextvars_path from "./docs/context-variables/path.json";
 import * as contextvars_source from "./docs/context-variables/source.json";
 
 // TODO: read this from the language-configuration json file
@@ -48,7 +49,7 @@ const STARTS_WITH_WHITESPACE_REGEX = /^(\s+)/;
 const BLOCK_SUBNAME_REGEX = /\"([\w-]+)\"/;
 
 export const hoverProvider: vscode.HoverProvider = { provideHover };
-const CONTEXT_VAR_TYPES = ["build", "source", "packer"];
+const CONTEXT_VAR_TYPES = ["build", "source", "packer", "path"];
 
 function provideHover(
   document: vscode.TextDocument,
@@ -388,6 +389,8 @@ function getContextVarableJSON(blockName: string, varName: string): Argument {
       return (contextvars_build as any)[varName];
     case "packer":
       return (contextvars_packer as any)[varName];
+    case "path":
+      return (contextvars_path as any)[varName];
     case "source":
       return (contextvars_source as any)[varName];
 
