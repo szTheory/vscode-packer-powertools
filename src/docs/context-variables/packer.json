@@ -1,0 +1,12 @@
+{
+  "version": {
+    "description": "This variable is set to the Packer version currently running.\n\nIf you are running a development version of Packer, the version variable will contain the released version number, dev flag, and current commit. If you are running a released version of Packer, the version variable will contain the released version number only.\n\nMake sure to wrap your variable in single quotes in order to escape the string that is returned; if you are running a dev version of packer the parenthesis may through off your shell escaping otherwise.",
+    "type": "version string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#packer-version"
+  },
+  "iterationID": {
+    "description": "If your build is pushing metadata to the HCP Packer registry, this variable is set to the value of the Iteration ID associated with this run.\n\nYou can also add this value to post-processors, for example to add to a manifest file.",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/contextual-variables#packer-version"
+  }
+}

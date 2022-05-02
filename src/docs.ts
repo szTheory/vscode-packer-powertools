@@ -37,6 +37,7 @@ import * as arguments_variable_validation from "./docs/arguments/variable/valida
 
 // Context vars
 import * as contextvars_build from "./docs/context-variables/build.json";
+import * as contextvars_packer from "./docs/context-variables/packer.json";
 import * as contextvars_source from "./docs/context-variables/source.json";
 
 // TODO: read this from the language-configuration json file
@@ -47,7 +48,7 @@ const STARTS_WITH_WHITESPACE_REGEX = /^(\s+)/;
 const BLOCK_SUBNAME_REGEX = /\"([\w-]+)\"/;
 
 export const hoverProvider: vscode.HoverProvider = { provideHover };
-const CONTEXT_VAR_TYPES = ["build", "source"];
+const CONTEXT_VAR_TYPES = ["build", "source", "packer"];
 
 function provideHover(
   document: vscode.TextDocument,
@@ -151,10 +152,7 @@ function provideHover(
     }
 
     // Is it a context variable? (has a dot before, and a } after)
-    if (
-      line.text.charAt(wordRange.start.character - 1) === "." &&
-      line.text.charAt(wordRange.end.character) === "}"
-    ) {
+    if (line.text.charAt(wordRange.start.character - 1) === ".") {
       console.log("--- CONTEXT VAR");
       const lineUpToJustBeforeDot = line.text.substring(
         0,
@@ -165,12 +163,8 @@ function provideHover(
       );
       if (blockType) {
         const json = getContextVarableJSON(blockType, word);
-        const requiredText = json.required ? "required" : "optional";
-        const secondaryText = [requiredText, json.type]
-          .filter((x) => x)
-          .join(", ");
         const wordMarkdown = json.url ? `[${word}](${json.url})` : word;
-        const markdown = `**${wordMarkdown}** *${secondaryText}* \n\n${json.description}`;
+        const markdown = `**${wordMarkdown}** *${json.type}* \n\n${json.description}`;
         resolve(new vscode.Hover(markdown));
       }
     }
@@ -392,6 +386,8 @@ function getContextVarableJSON(blockName: string, varName: string): Argument {
   switch (blockName) {
     case "build":
       return (contextvars_build as any)[varName];
+    case "packer":
+      return (contextvars_packer as any)[varName];
     case "source":
       return (contextvars_source as any)[varName];
 
