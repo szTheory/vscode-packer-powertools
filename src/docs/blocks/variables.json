@@ -1,0 +1,4 @@
+{
+  "description": "Each input variable accepted by a build must be declared using a `variable` block, or a less precise `variables` block.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/variables#declaring-an-input-variable"
+}

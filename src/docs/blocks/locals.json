@@ -1,0 +1,4 @@
+{
+  "description": "The `locals` block, also called the `local-variable` block, defines locals within your Packer configuration.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/locals"
+}

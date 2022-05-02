@@ -8,6 +8,6 @@ node_modules
 docsbuild/scratch
 docsbuild/processors/builders/scratch
 
-# Util .ts build files
+# Util .ts temporary build output
 util/**/*.js
 util/**/*.js.map

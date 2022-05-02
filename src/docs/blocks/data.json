@@ -1,0 +1,4 @@
+{
+  "description": "The `data` block defines data sources within your Packer configuration.\n\nData sources allow data to be fetched or computed for use elsewhere in locals and sources configuration. Use of data sources allows a Builder to make use of information defined outside of Packer.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/datasources"
+}

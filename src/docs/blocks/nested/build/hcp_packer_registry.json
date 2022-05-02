@@ -1,0 +1,4 @@
+{
+  "description": "The `hcp_packer_registry` block lets you customize the metadata Packer sends to HCP Packer Registry. It configures the details of an image that is created or updated within the HCP Packer registry.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/hcp_packer_registry"
+}

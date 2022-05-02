@@ -1,0 +1,33 @@
+{
+  "type": "file",
+  "artifact_builder_id": "packer.file",
+  "description": "The `file` Packer builder is not really a builder, it just creates an artifact from a file. It can be used to debug post-processors without incurring high wait times.",
+  "hcl_example": {
+    "description": "Below is a fully functioning example. It create a file at `target` with the\nspecified `content`.",
+    "code": "source \"file\" \"basic-example\" {\n  content =  \"Lorem ipsum dolor sit amet\"\n  target =  \"dummy_artifact\"\n}\n\nbuild {\n  sources = [\"sources.file.basic-example\"]\n}"
+  },
+  "required": {
+    "items": [
+      {
+        "name": "target",
+        "type": "string",
+        "description": "The path for the artifact file that will be created. If the path contains directories that don't exist, Packer will create them, too."
+      }
+    ]
+  },
+  "optional": {
+    "shared_description": "You can only define one of `source` or `content`. If none of them is defined the artifact will be empty.",
+    "items": [
+      {
+        "name": "source",
+        "type": "string",
+        "description": "The path for a file which will be copied as the artifact."
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "description": "The content that will be put into the artifact."
+      }
+    ]
+  }
+}

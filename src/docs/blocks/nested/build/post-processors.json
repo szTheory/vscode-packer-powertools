@@ -1,0 +1,4 @@
+{
+  "description": "The `post-processors` block allows to define lists of `post-processor`s, that will run from the artifact of each build.\n\nThe `post-processor` block allows you to define multiple post-processors that will run from the `Artifact` of each build.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/build/post-processors"
+}

@@ -1,0 +1,4 @@
+{
+  "description": "The top-level `source` block defines reusable builder configuration blocks. The first label is the builder type. The second label is the unique name or identifier you want to give to the source.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/source"
+}

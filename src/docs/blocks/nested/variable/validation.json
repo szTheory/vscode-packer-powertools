@@ -1,0 +1,4 @@
+{
+  "description": "In addition to Type Constraints, you can specify arbitrary custom validation rules for a particular variable using one or more `validation` block nested within the corresponding `variable` block.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/variables#custom-validation-rules"
+}

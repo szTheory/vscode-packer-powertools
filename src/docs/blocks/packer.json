@@ -1,0 +1,4 @@
+{
+  "description": "The `packer` configuration block type is used to configure some behaviors of Packer itself, such as the minimum required Packer version needed to apply your configuration.",
+  "url": "https://www.packer.io/docs/templates/hcl_templates/blocks/variable"
+}

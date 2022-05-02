@@ -7,4 +7,4 @@ pwd | cat
 cp ../../scratch/git/packer/website/content/docs/builders/file.mdx scratch/
 
 # Delete extra stuff from the file
-sed -e '1,14d;22,40d;52,62d' -i '' ./scratch/file.mdx
+# sed -e '1,14d;22,40d;52,62d' -i '' ./scratch/file.mdx
