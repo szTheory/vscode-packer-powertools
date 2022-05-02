@@ -35,6 +35,10 @@ import * as arguments_packer from "./docs/arguments/packer.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
+// Context vars
+import * as contextvars_build from "./docs/context-variables/build.json";
+import * as contextvars_source from "./docs/context-variables/source.json";
+
 // TODO: read this from the language-configuration json file
 const WORD_REGEX_STR =
   "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\\\\\s\\/\\?\\s]+)";
@@ -43,6 +47,7 @@ const STARTS_WITH_WHITESPACE_REGEX = /^(\s+)/;
 const BLOCK_SUBNAME_REGEX = /\"([\w-]+)\"/;
 
 export const hoverProvider: vscode.HoverProvider = { provideHover };
+const CONTEXT_VAR_TYPES = ["build", "source"];
 
 function provideHover(
   document: vscode.TextDocument,
@@ -51,7 +56,11 @@ function provideHover(
 ): vscode.ProviderResult<vscode.Hover> {
   return new Promise((resolve, _reject) => {
     // Get the word and current line
-    const word = document.getText(document.getWordRangeAtPosition(position));
+    const wordRange = document.getWordRangeAtPosition(position);
+    if (!wordRange) {
+      return resolve(null);
+    }
+    const word = document.getText(wordRange);
     const line = document.lineAt(position.line);
 
     console.log(position);
@@ -90,16 +99,16 @@ function provideHover(
         resolve(new vscode.Hover(markdown));
 
         // Or is it something to the right of the = symbol?
-      } else {
-        // TODO: check if it's a function
-
-        // If it's not a function, ignore
-        console.log("TO THE RIGHT OF = SYMBOL");
-        resolve(null);
       }
+    }
 
-      // Is it a block? (a line with an { symbol)
-    } else if (line.text.indexOf("{") >= 0) {
+    // Is it a function?
+    if (false) {
+      // TODO: check if it's a function
+    }
+
+    // Is it a block? (a line ending with an { symbol)
+    if (line.text.trim().endsWith("{")) {
       console.log("---- BLOCK");
 
       // Find the second quote symbol
@@ -138,6 +147,31 @@ function provideHover(
           const markdown = `**[${word}](${json.url})** *Block* \n\n${json.description}`;
           resolve(new vscode.Hover(markdown));
         }
+      }
+    }
+
+    // Is it a context variable? (has a dot before, and a } after)
+    if (
+      line.text.charAt(wordRange.start.character - 1) === "." &&
+      line.text.charAt(wordRange.end.character) === "}"
+    ) {
+      console.log("--- CONTEXT VAR");
+      const lineUpToJustBeforeDot = line.text.substring(
+        0,
+        wordRange.start.character - 1
+      );
+      const blockType = CONTEXT_VAR_TYPES.find((x) =>
+        lineUpToJustBeforeDot.endsWith(x)
+      );
+      if (blockType) {
+        const json = getContextVarableJSON(blockType, word);
+        const requiredText = json.required ? "required" : "optional";
+        const secondaryText = [requiredText, json.type]
+          .filter((x) => x)
+          .join(", ");
+        const wordMarkdown = json.url ? `[${word}](${json.url})` : word;
+        const markdown = `**${wordMarkdown}** *${secondaryText}* \n\n${json.description}`;
+        resolve(new vscode.Hover(markdown));
       }
     }
 
@@ -351,5 +385,17 @@ function getArgumentJSON(blockName: string, argumentName: string): Argument {
 
     default:
       throw new Error(`Argument block not found: ${blockName}`);
+  }
+}
+
+function getContextVarableJSON(blockName: string, varName: string): Argument {
+  switch (blockName) {
+    case "build":
+      return (contextvars_build as any)[varName];
+    case "source":
+      return (contextvars_source as any)[varName];
+
+    default:
+      throw new Error(`Context variable block not found: ${blockName}`);
   }
 }
