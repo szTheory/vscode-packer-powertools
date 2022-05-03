@@ -534,7 +534,7 @@
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/conversion/can"
   },
   "convert": {
-    "description": "`convert` converts a value or an expression to a given type.\n\nExplicit type conversions are rarely necessary in HCL because it will convert types automatically where required. Use the explicit type conversion functions only to normalize types returned in outputs.\n\nOnly numbers and strings containing decimal representations of numbers can be converted to number. All other values will produce an error.\n\nOnly boolean values and the exact strings "true" and "false" can be converted to boolean. All other values will produce an error.\n\nOnly the primitive types (string, number, and bool) can be converted to string. All other values will produce an error.",
+    "description": "`convert` converts a value or an expression to a given type.\n\nExplicit type conversions are rarely necessary in HCL because it will convert types automatically where required. Use the explicit type conversion functions only to normalize types returned in outputs.\n\nOnly numbers and strings containing decimal representations of numbers can be converted to number. All other values will produce an error.\n\nOnly boolean values and the exact strings \"true\" and \"false\" can be converted to boolean. All other values will produce an error.\n\nOnly the primitive types (string, number, and bool) can be converted to string. All other values will produce an error.",
     "signature": "convert(value | expression)",
     "type": "type conversion",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/conversion/convert"

@@ -273,7 +273,7 @@
         "1": {
           "patterns": [
             {
-              "match": "abspath|abs|ceil|floor|log|max|min|pow|signum|chomp|formatlist|indent|join|lower|regexall|regex|replace|split|strrev|substr|title|trimspace|upper|chunklist|coalescelist|coalesce|compact|concat|contains|distinct|element|flatten|index|keys|length|lookup|matchkeys|merge|range|reverse|setintersection|setproduct|setunion|slice|sort|transpose|values|zipmap|base64decode|base64encode|base64gzip|csvdecode|jsondecode|jsonencode|urlencode|yamldecode|yamlencode|dirname|pathexpand|basename|fileexists|fileset|filebase64|templatefile|formatdate|timeadd|timestamp|base64sha256|base64sha512|bcrypt|filebase64sha256|filebase64sha512|filemd5|filemd1|filesha256|filesha512|md5|rsadecrypt|sha1|sha256|sha512|uuidv5|uuid|cidrhost|cidrnetmask|cidrsubnet|tobool|tolist|tomap|tonumber|toset|tostring|file|format",
+              "match": "abs|abspath|aws_secretsmanager|base64decode|base64encode|basename|bcrypt|can|ceil|chomp|chunklist|cidrhost|cidrnetmask|cidrsubnet|cidrsubnets|coalesce|coalescelist|compact|concat|consul_key|contains|convert|csvdecode|dirname|distinct|element|env|file|fileexists|fileset|flatten|floor|format|formatdate|formatlist|indent|index|join|jsondecode|jsonencode|keys|legacy_isotime|legacy_strftime|length|log|lookup|lower|max|md5|merge|min|parseint|pathexpand|pow|range|regexall|regex_replace|regex|replace|reverse|rsadecrypt|setintersection|setproduct|setunion|sha1|sha256|sha512|signum|slice|sort|split|strrev|substr|templatefile|timeadd|timestamp|title|trim|trimprefix|trimspace|trimsuffix|try|upper|urlencode|uuidv4|uuidv5|values|vault|yamldecode|yamlencode|zipmap",
               "name": "support.function.builtin.packer"
             }
           ]
