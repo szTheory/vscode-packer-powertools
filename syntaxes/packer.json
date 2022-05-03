@@ -77,7 +77,7 @@
         "1": {
           "patterns": [
             {
-              "match": "\\bresource|provider|variable|output|locals|module|data|packer\\b",
+              "match": "\\bbuild|data|dynamic|local|locals|packer|source|variable|variables\\b",
               "comment": "Known block type",
               "name": "entity.name.type.packer"
             },
