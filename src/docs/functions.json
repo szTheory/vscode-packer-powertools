@@ -526,5 +526,23 @@
     "signature": "cidrsubnets(prefix, newbits...)",
     "type": "ip network",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/ipnet/cidrsubnets"
+  },
+  "can": {
+    "description": "`can` evaluates the given expression and returns a boolean value indicating whether the expression produced a result without any errors.\n\nThis is a special function that is able to catch errors produced when evaluating its argument. For most situations where you could use `can` it's better to use `try` instead, because it allows for more concise definition of fallback values for failing expressions.\n\nThe `can` function can only catch and handle _dynamic_ errors resulting from access to data that isn't known until runtime. It will not catch errors relating to expressions that can be proven to be invalid for any input, such as a malformed resource reference.\n\n~> **Warning:** The `can` function is intended only for simple tests in variable validation rules. Although it can technically accept any sort of expression and be used elsewhere in the configuration, we recommend against using it in other contexts. For error handling elsewhere in the configuration, prefer to use `try`.",
+    "signature": "can(expression)",
+    "type": "type conversion",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/conversion/can"
+  },
+  "convert": {
+    "description": "`convert` converts a value or an expression to a given type.\n\nExplicit type conversions are rarely necessary in HCL because it will convert types automatically where required. Use the explicit type conversion functions only to normalize types returned in outputs.\n\nOnly numbers and strings containing decimal representations of numbers can be converted to number. All other values will produce an error.\n\nOnly boolean values and the exact strings "true" and "false" can be converted to boolean. All other values will produce an error.\n\nOnly the primitive types (string, number, and bool) can be converted to string. All other values will produce an error.",
+    "signature": "convert(value | expression)",
+    "type": "type conversion",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/conversion/convert"
+  },
+  "try": {
+    "description": "`try` evaluates all of its argument expressions in turn and returns the result of the first one that does not produce any errors.\n\nThis is a special function that is able to catch errors produced when evaluating its arguments, which is particularly useful when working with complex data structures whose shape is not well-known at implementation time.\n\nFor example, if some data is retrieved from an external system in JSON or YAML format and then decoded, the result may have attributes that are not guaranteed to be set. We can use `try` to produce a normalized data structure which has a predictable type that can therefore be used more conveniently elsewhere in the configuration.",
+    "signature": "try(expressions...)",
+    "type": "type conversion",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/conversion/try"
   }
 }
