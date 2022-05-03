@@ -70,14 +70,14 @@
     },
     "block": {
       "name": "meta.block.hcl",
-      "begin": "(\\w+)([\\s\\\"\\-\\w]*)(\\{)",
+      "begin": "([\\w-]+)([\\s\\\"\\-\\w]*)(\\{)",
       "end": "\\}",
       "comment": "This will match Packer blocks like `source \"null\" \"example\" {` or `build {`",
       "beginCaptures": {
         "1": {
           "patterns": [
             {
-              "match": "\\bbuild|data|dynamic|local|locals|packer|source|variable|variables\\b",
+              "match": "\\bbuild|data|dynamic|locals|local|packer|source|variable|variables\\b",
               "comment": "Known block type",
               "name": "entity.name.type.packer"
             },
