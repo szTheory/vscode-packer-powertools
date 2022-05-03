@@ -72,7 +72,7 @@
       "name": "meta.block.hcl",
       "begin": "(\\w+)([\\s\\\"\\-\\w]*)(\\{)",
       "end": "\\}",
-      "comment": "This will match Packer blocks like `resource \"aws_instance\" \"web\" {` or `module {`",
+      "comment": "This will match Packer blocks like `source \"null\" \"example\" {` or `build {`",
       "beginCaptures": {
         "1": {
           "patterns": [
@@ -414,7 +414,7 @@
     },
     "named_value_references": {
       "name": "variable.other.readwrite.packer",
-      "match": "\\b(var|local|module|data|path|packer)\\b",
+      "match": "\\b(var|local|source|data|path|packer)\\b",
       "comment": "Constant values available only to Packer."
     },
     "numeric_literals": {
