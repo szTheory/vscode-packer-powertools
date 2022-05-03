@@ -38,6 +38,15 @@ You must have Packer installed and in your system `PATH`.
 
 ## Release Notes
 
+### 0.4.0
+
+- TODO: pull these from the git history and git diff
+
+- Add documentation hover tooltips
+- Fix syntax highlighting bug for blocks with dashes (-) in them, such as `error-cleanup-provisioner`
+- Update syntax definition file to use top-level blocks for Packer instead of Terraform
+- Update syntax definition file to use Packer built-in functions instead of Terraform
+
 ### 0.3.0
 
 - Update to the latest syntax highlighting file from the [HashiCorp Syntax](https://github.com/hashicorp/syntax) repo

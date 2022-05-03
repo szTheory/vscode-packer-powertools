@@ -34,6 +34,7 @@ import * as arguments_build_source from "./docs/arguments/build/source.json";
 import * as arguments_dynamic from "./docs/arguments/dynamic.json";
 import * as arguments_local from "./docs/arguments/local.json";
 import * as arguments_packer from "./docs/arguments/packer.json";
+import * as arguments_source from "./docs/arguments/source.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
@@ -98,18 +99,26 @@ function provideHover(
       if (position.character < equalsSignIndex) {
         console.log("ATTRIBUTE");
 
-        const parentBlockType = findParentBlockType(
-          word,
-          line,
-          position,
-          document
-        );
-        if (!parentBlockType) {
+        const parentBlock = findParentBlock(word, line, document);
+        if (!parentBlock) {
           throw new Error(
             "Could not find parent block type but it should be present for an attribute."
           );
         }
-        const json = getArgumentJSON(parentBlockType.name, word);
+
+        const grandparentBlock = findParentBlock(
+          parentBlock.type,
+          document.lineAt(parentBlock.lineNum),
+          document
+        );
+
+        const json = getArgumentJSON(
+          grandparentBlock?.type || null,
+          grandparentBlock?.name || null,
+          parentBlock.type,
+          parentBlock.name,
+          word
+        );
         const requiredText = json.required ? "required" : "optional";
         const secondaryText = [requiredText, json.type]
           .filter((x) => x)
@@ -142,14 +151,9 @@ function provideHover(
         // TODO: determine what is the closest block name it's nested in
         // Is it a nested block?
         if (STARTS_WITH_WHITESPACE_REGEX.test(line.text)) {
-          const parentBlockType = findParentBlockType(
-            word,
-            line,
-            position,
-            document
-          );
+          const parentBlockType = findParentBlock(word, line, document);
 
-          const json = getNestedBlockJSON(word, parentBlockType?.name || null);
+          const json = getNestedBlockJSON(word, parentBlockType?.type || null);
           const markdown = `**[${word}](${json.url})** *Block* \n\n${json.description}`;
           resolve(new vscode.Hover(markdown));
 
@@ -192,33 +196,33 @@ function provideHover(
   });
 }
 
-interface ParentBlockType {
+interface ParentBlock {
+  type: string;
   name: string;
   subName: string | null;
+  lineNum: number;
 }
 
-function findParentBlockType(
+function findParentBlock(
   word: string,
   line: vscode.TextLine,
-  position: vscode.Position,
   document: vscode.TextDocument
-): ParentBlockType | null {
+): ParentBlock | null {
   // Dynamic blocks can be in any other parent block
   if (word === "dynamic") {
     return null;
   }
 
   const matches = STARTS_WITH_WHITESPACE_REGEX.exec(line.text);
-  if (!matches) {
-    throw new Error(
-      "Could not find whitespace, but it should be there by this point in execution."
-    );
+  const whitespaceLengthCurrentLine = matches ? matches[0].length : 0;
+  // Already at a top-level block
+  if (whitespaceLengthCurrentLine === 0) {
+    return null;
   }
-  const whitespaceLengthCurrentLine = matches[0].length;
 
   // Find the closest parent block
   let foundParentBlock = false;
-  let nextSearchLineNum = position.line;
+  let nextSearchLineNum = line.lineNumber;
   let parentLine: vscode.TextLine | null = null;
   while (!foundParentBlock && nextSearchLineNum > 0) {
     nextSearchLineNum -= 1;
@@ -262,11 +266,14 @@ function findParentBlockType(
     );
   }
 
-  const parentBlockName = results[0];
+  const parentBlockType = results[0];
+  const parentBlockName = results[1];
   const subName = findBlockSubName(parentLine.text);
 
   return {
+    type: parentBlockType,
     name: parentBlockName,
+    lineNum: nextSearchLineNum,
     subName,
   };
 }
@@ -284,7 +291,7 @@ function findBlockSubName(line: string): string | null {
   return result[0];
 }
 
-interface Block {
+interface BlockTooltipInfo {
   description: string;
   url: string;
 }
@@ -292,7 +299,7 @@ interface Block {
 function getNestedBlockJSON(
   blockName: string,
   parentBlockName: string | null
-): Block {
+): BlockTooltipInfo {
   switch (parentBlockName) {
     case null:
       switch (blockName) {
@@ -349,7 +356,7 @@ function getNestedBlockJSON(
   }
 }
 
-function getBlockJSON(blockName: string): Block {
+function getBlockJSON(blockName: string): BlockTooltipInfo {
   switch (blockName) {
     case "build":
       return block_build;
@@ -404,37 +411,68 @@ interface Argument {
   url?: string;
 }
 
-function getArgumentJSON(blockName: string, argumentName: string): Argument {
+function getArgumentJSON(
+  grandparentBlockType: string | null,
+  _grandparentBlockName: string | null,
+  parentBlockType: string,
+  _parentBlockName: string | null,
+  argumentName: string
+): Argument {
   // "default" seems to be a reserved key on JS objects, so we have to munge it
   if (argumentName === "default") {
     argumentName = "defaultArg";
   }
 
-  // TODO: handle double nested blocks
-  switch (blockName) {
+  switch (grandparentBlockType) {
+    case null:
+      switch (parentBlockType) {
+        case "build":
+          return (arguments_build as any)[argumentName];
+        case "local":
+          return (arguments_local as any)[argumentName];
+        case "packer":
+          return (arguments_packer as any)[argumentName];
+        case "dynamic":
+          return (arguments_dynamic as any)[argumentName];
+        case "source":
+          return (arguments_source as any)[argumentName];
+        case "variable":
+          return (arguments_variable as any)[argumentName];
+
+        default:
+          throw new Error(
+            `Parent argument block not found: ${parentBlockType}`
+          );
+      }
     case "build":
-      return (arguments_build as any)[argumentName];
-    case "hcp_packer_registry":
-      return (arguments_build_hcr_packer_registry as any)[argumentName];
-    case "local":
-      return (arguments_local as any)[argumentName];
-    case "packer":
-      return (arguments_packer as any)[argumentName];
-    case "provisioner":
-      return (arguments_build_provisioner as any)[argumentName];
-    case "post-processor":
-      return (arguments_build_post_processor as any)[argumentName];
-    case "source":
-      return (arguments_build_source as any)[argumentName];
-    case "dynamic":
-      return (arguments_dynamic as any)[argumentName];
+      switch (parentBlockType) {
+        case "hcp_packer_registry":
+          return (arguments_build_hcr_packer_registry as any)[argumentName];
+        case "provisioner":
+          return (arguments_build_provisioner as any)[argumentName];
+        case "post-processor":
+          return (arguments_build_post_processor as any)[argumentName];
+        case "source":
+          return (arguments_build_source as any)[argumentName];
+        default:
+          throw new Error(
+            `Parent argument block not found: ${parentBlockType}`
+          );
+      }
     case "variable":
-      return (arguments_variable as any)[argumentName];
-    case "validation":
-      return (arguments_variable_validation as any)[argumentName];
+      switch (parentBlockType) {
+        case "validation":
+          return (arguments_variable_validation as any)[argumentName];
+        default:
+          throw new Error(
+            `Parent argument block not found: ${parentBlockType}`
+          );
+      }
 
     default:
-      throw new Error(`Argument block not found: ${blockName}`);
+      throw new Error(
+        `Grandparent argument block not found: ${grandparentBlockType}`
+      );
   }
 }
 

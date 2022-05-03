@@ -5,6 +5,12 @@
     "type": "string",
     "url": "https://www.packer.io/docs/communicators"
   },
+  "pause_before_connecting": {
+    "description": "We recommend that you enable SSH or WinRM as the very last step in your guest's bootstrap script, but sometimes you may have a race condition where you need Packer to wait before attempting to connect to your guest.\n\nIf you end up in this situation, you can use the template option `pause_before_connecting`. By default, there is no pause. For example if you set `pause_before_connecting` to `10m` Packer will check whether it can connect, as normal. But once a connection attempt is successful, it will disconnect and then wait 10 minutes before connecting to the guest and beginning provisioning.",
+    "required": false,
+    "type": "duration string | ex: \"1h5m2s\"",
+    "url": "https://www.packer.io/docs/templates/legacy_json_templates/communicator"
+  },
   "sources": {
     "description": "You can set `sources` to an array of strings with references to pre-defined sources as an alternative to defining build-level `source` blocks.",
     "required": false,

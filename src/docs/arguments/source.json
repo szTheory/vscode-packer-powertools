@@ -1,0 +1,193 @@
+{
+  "ssh_host": {
+    "type": "string",
+    "description": "The address to SSH to. This usually is automatically configured by the builder.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_port": {
+    "type": "int",
+    "description": "The port to connect to SSH. This defaults to `22`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_username": {
+    "type": "string",
+    "description": "The username to connect to SSH with. Required if using SSH.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_password": {
+    "type": "string",
+    "description": "A plaintext password to use to authenticate with SSH.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_ciphers": {
+    "type": "[]string",
+    "description": "This overrides the value of ciphers supported by default by golang. The default value is [ \"aes128-gcm@openssh.com\", \"chacha20-poly1305@openssh.com\", \"aes128-ctr\", \"aes192-ctr\", \"aes256-ctr\", ] Valid options for ciphers include: \"aes128-ctr\", \"aes192-ctr\", \"aes256-ctr\", \"aes128-gcm@openssh.com\", \"chacha20-poly1305@openssh.com\", \"arcfour256\", \"arcfour128\", \"arcfour\", \"aes128-cbc\", \"3des-cbc\",",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_clear_authorized_keys": {
+    "type": "bool",
+    "description": "If true, Packer will attempt to remove its temporary key from `~/.ssh/authorized_keys` and `/root/.ssh/authorized_keys`. This is a mostly cosmetic option, since Packer will delete the temporary private key from the host system regardless of whether this is set to true (unless the user has set the `-debug` flag). Defaults to \"false\"; currently only works on guests with `sed` installed.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_key_exchange_algorithms": {
+    "type": "[]string",
+    "description": "If set, Packer will override the value of key exchange (kex) altorighms supported by default by golang. Acceptable values include: \"curve25519-sha256@libssh.org\", \"ecdh-sha2-nistp256\", \"ecdh-sha2-nistp384\", \"ecdh-sha2-nistp521\", \"diffie-hellman-group14-sha1\", and \"diffie-hellman-group1-sha1\".",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_certificate_file": {
+    "type": "string",
+    "description": "Path to user certificate used to authenticate with SSH. The `~` can be used in path and will be expanded to the home directory of current user.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_pty": {
+    "type": "bool",
+    "description": "If `true`, a PTY will be requested for the SSH connection. This defaults to `false`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_timeout": {
+    "type": "duration string | ex: \"1h5m2s\"",
+    "description": "The time to wait for SSH to become available. Packer uses this to determine when the machine has booted so this is usually quite long. Example value: `10m`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_disable_agent_forwarding": {
+    "type": "bool",
+    "description": "If true, SSH agent forwarding will be disabled. Defaults to `false`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_handshake_attempts": {
+    "type": "int",
+    "description": "The number of handshakes to attempt with SSH once it can connect. This defaults to `10`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_host": {
+    "type": "string",
+    "description": "A bastion host to use for the actual SSH connection.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_port": {
+    "type": "int",
+    "description": "The port of the bastion host. Defaults to `22`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_agent_auth": {
+    "type": "bool",
+    "description": "If `true`, the local SSH agent will be used to authenticate with the bastion host. Defaults to `false`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_username": {
+    "type": "string",
+    "description": "The username to connect to the bastion host.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_password": {
+    "type": "string",
+    "description": "The password to use to authenticate with the bastion host.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_interactive": {
+    "type": "bool",
+    "description": "If `true`, the keyboard-interactive used to authenticate with bastion host.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_private_key_file": {
+    "type": "string",
+    "description": "Path to a PEM encoded private key file to use to authenticate with the bastion host. The `~` can be used in path and will be expanded to the home directory of current user.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_bastion_certificate_file": {
+    "type": "string",
+    "description": "Path to user certificate used to authenticate with bastion host. The `~` can be used in path and will be expanded to the home directory of current user.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_file_transfer_method": {
+    "type": "string",
+    "description": "How to transfer files, Secure copy (default) or SSH File Transfer Protocol.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_proxy_host": {
+    "type": "string",
+    "description": "A SOCKS proxy host to use for SSH connection",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_proxy_port": {
+    "type": "int",
+    "description": "A port of the SOCKS proxy. Defaults to `1080`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_proxy_username": {
+    "type": "string",
+    "description": "The optional username to authenticate with the proxy server.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_proxy_password": {
+    "type": "string",
+    "description": "The optional password to use to authenticate with the proxy server.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_keep_alive_interval": {
+    "type": "duration string | ex: \"1h5m2s\"",
+    "description": "How often to send \"keep alive\" messages to the server. Set to a negative value (`-1s`) to disable. Example value: `10s`. Defaults to `5s`.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_read_write_timeout": {
+    "type": "duration string | ex: \"1h5m2s\"",
+    "description": "The amount of time to wait for a remote command to end. This might be useful if, for example, packer hangs on a connection after a reboot. Example: `5m`. Disabled by default.",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_remote_tunnels": {
+    "type": "[]string",
+    "description": "",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+  "ssh_local_tunnels": {
+    "type": "[]string",
+    "description": "",
+    "url": "https://www.packer.io/docs/communicators/ssh#ssh-communicator-1"
+  },
+
+  "winrm_username": {
+    "type": "string",
+    "description": "The username to use to connect to WinRM.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_password": {
+    "type": "string",
+    "description": "The password to use to connect to WinRM.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_host": {
+    "type": "string",
+    "description": "The address for WinRM to connect to. NOTE: If using an Amazon EBS builder, you can specify the interface WinRM connects to via `ssh_interface`",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_no_proxy": {
+    "type": "bool",
+    "description": "Setting this to `true` adds the remote `host:port` to the `NO_PROXY` environment variable. This has the effect of bypassing any configured proxies when connecting to the remote host. Default to `false`.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_port": {
+    "type": "int",
+    "description": "The WinRM port to connect to. This defaults to `5985` for plain unencrypted connection and `5986` for SSL when `winrm_use_ssl` is set to true.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_timeout": {
+    "type": "duration string | ex: \"1h5m2s\"",
+    "description": "The amount of time to wait for WinRM to become available. This defaults to `30m` since setting up a Windows machine generally takes a long time.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_use_ssl": {
+    "type": "bool",
+    "description": "If `true`, use HTTPS for WinRM.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_insecure": {
+    "type": "bool",
+    "description": "If `true`, do not check server certificate chain and host name.",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  },
+  "winrm_use_ntlm": {
+    "type": "bool",
+    "description": "If `true`, NTLMv2 authentication (with session security) will be used for WinRM, rather than default (basic authentication), removing the requirement for basic authentication to be enabled within the target guest. Further reading for remote connection authentication can be found [here](https://msdn.microsoft.com/en-us/library/aa384295(v=vs.85).aspx). ",
+    "url": "https://www.packer.io/docs/communicators/winrm#winrm-communicator-options"
+  }
+}
