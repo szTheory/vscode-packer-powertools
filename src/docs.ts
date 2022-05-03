@@ -50,7 +50,11 @@ import * as contextvars_source from "./docs/context-variables/source.json";
 // Packer functions
 import * as packer_functions from "./docs/functions.json";
 
-// TODO: read this from the language-configuration json file
+// Block names
+import * as blockname_source_file from "./docs/blocknames/source/file.json";
+import * as blockname_source_null from "./docs/blocknames/source/null.json";
+
+// TODO: read this from the language-configuration json file?
 const WORD_REGEX_STR =
   "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\\\\\s\\/\\?\\s]+)";
 const WORD_REGEX = new RegExp(WORD_REGEX_STR, "g");
@@ -58,6 +62,7 @@ const STARTS_WITH_WHITESPACE_REGEX = /^(\s+)/;
 const BLOCK_SUBNAME_REGEX = /\"([\w-]+)\"/;
 
 export const hoverProvider: vscode.HoverProvider = { provideHover };
+// TODO: build this dynamically by looping over the files in the docs folder
 const CONTEXT_VAR_TYPES = ["build", "source", "packer", "path"];
 
 function provideHover(
@@ -149,7 +154,7 @@ function provideHover(
       }
       console.log("first quote index: " + firstQuoteIndex);
 
-      // Is it a block name? (comes before the first quote, or there is no quote)
+      // Is it a block type? (comes before the first quote, or there is no quote)
       if (firstQuoteIndex < 0 || position.character < firstQuoteIndex) {
         // TODO: determine what is the closest block name it's nested in
         // Is it a nested block?
@@ -168,6 +173,34 @@ function provideHover(
           const markdown = `**[${word}](${json.url})** *Block* \n\n${json.description}`;
           resolve(new vscode.Hover(markdown));
         }
+      }
+
+      // Is it a block name? Comes after the first quote, but before any second quote
+      if (
+        firstQuoteIndex > 0 &&
+        position.character > firstQuoteIndex &&
+        (secondQuoteIndex < 0 || position.character < secondQuoteIndex)
+      ) {
+        const results = line.text.match(WORD_REGEX);
+        if (!results || results.length < 1) {
+          throw new Error(
+            "Could not find a block type in the line, but it should have been there."
+          );
+        }
+        const blockType = results[0];
+
+        let secondaryText = null;
+        switch (blockType) {
+          case "source":
+            secondaryText = "builder";
+            break;
+          default:
+            secondaryText = blockType;
+        }
+
+        const json = getBlockNameJSON(blockType, word);
+        const markdown = `**[${word}](${json.url})** *${secondaryText}* \n\n${json.description}`;
+        resolve(new vscode.Hover(markdown));
       }
     }
 
@@ -508,5 +541,27 @@ function getContextVarableJSON(blockName: string, varName: string): Argument {
 
     default:
       throw new Error(`Context variable block not found: ${blockName}`);
+  }
+}
+
+function getBlockNameJSON(
+  blockType: string,
+  blockName: string
+): BlockTooltipInfo {
+  switch (blockType) {
+    case "source":
+      switch (blockName) {
+        case "file":
+          return blockname_source_file;
+        case "null":
+          return blockname_source_null;
+        default:
+          throw new Error(
+            `Block name JSON for ${blockName} in block type ${blockType} not found`
+          );
+      }
+
+    default:
+      throw new Error(`Block name JSON for block type ${blockType} not found`);
   }
 }
