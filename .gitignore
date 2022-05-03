@@ -11,3 +11,6 @@ docsbuild/processors/builders/scratch
 # Util .ts temporary build output
 util/**/*.js
 util/**/*.js.map
+
+# Temp scratch file for parsing args
+args.mdx

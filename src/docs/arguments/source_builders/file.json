@@ -1,0 +1,23 @@
+{
+  "target": {
+    "type": "string",
+    "description": "The path for the artifact file that will be created. If the path contains directories that don't exist, Packer will create them, too.",
+    "url": "https://www.packer.io/docs/builders/file",
+    "required": true,
+    "shared_description": ""
+  },
+  "source": {
+    "type": "string",
+    "description": "The path for a file which will be copied as the artifact.",
+    "url": "https://www.packer.io/docs/builders/file",
+    "required": false,
+    "shared_description": "You can only define one of `source` or `content`. If none of them is defined the artifact will be empty."
+  },
+  "content": {
+    "type": "string",
+    "description": "The content that will be put into the artifact.",
+    "url": "https://www.packer.io/docs/builders/file",
+    "required": false,
+    "shared_description": "You can only define one of `source` or `content`. If none of them is defined the artifact will be empty."
+  }
+}

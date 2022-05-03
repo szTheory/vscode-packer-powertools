@@ -38,6 +38,9 @@ import * as arguments_source from "./docs/arguments/source.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
+// Builder args
+import * as builder_file from "./docs/arguments/source_builders/file.json";
+
 // Context vars
 import * as contextvars_build from "./docs/context-variables/build.json";
 import * as contextvars_packer from "./docs/context-variables/packer.json";
@@ -50,7 +53,7 @@ import * as packer_functions from "./docs/functions.json";
 // TODO: read this from the language-configuration json file
 const WORD_REGEX_STR =
   "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\\\\\s\\/\\?\\s]+)";
-const WORD_REGEX = new RegExp(WORD_REGEX_STR);
+const WORD_REGEX = new RegExp(WORD_REGEX_STR, "g");
 const STARTS_WITH_WHITESPACE_REGEX = /^(\s+)/;
 const BLOCK_SUBNAME_REGEX = /\"([\w-]+)\"/;
 
@@ -116,7 +119,7 @@ function provideHover(
           grandparentBlock?.type || null,
           grandparentBlock?.name || null,
           parentBlock.type,
-          parentBlock.name,
+          parentBlock.name || null,
           word
         );
         const requiredText = json.required ? "required" : "optional";
@@ -198,7 +201,7 @@ function provideHover(
 
 interface ParentBlock {
   type: string;
-  name: string;
+  name: string | null;
   subName: string | null;
   lineNum: number;
 }
@@ -259,20 +262,20 @@ function findParentBlock(
   }
   console.log(`parent block line: ${parentLine.text}`);
 
-  const results = WORD_REGEX.exec(parentLine.text);
-  if (!results) {
+  const results = parentLine.text.match(WORD_REGEX);
+  if (!results || results.length < 1) {
     throw new Error(
       "Could not find a word in the parent line, but it should have been there."
     );
   }
-
   const parentBlockType = results[0];
   const parentBlockName = results[1];
+
   const subName = findBlockSubName(parentLine.text);
 
   return {
     type: parentBlockType,
-    name: parentBlockName,
+    name: parentBlockName || null,
     lineNum: nextSearchLineNum,
     subName,
   };
@@ -407,15 +410,15 @@ function getFunctionJSON(funcName: string): PackerFunction {
 interface Argument {
   description: string;
   required: boolean;
-  type?: string;
-  url?: string;
+  type: string | null;
+  url: string | null;
 }
 
 function getArgumentJSON(
   grandparentBlockType: string | null,
   _grandparentBlockName: string | null,
   parentBlockType: string,
-  _parentBlockName: string | null,
+  parentBlockName: string | null,
   argumentName: string
 ): Argument {
   // "default" seems to be a reserved key on JS objects, so we have to munge it
@@ -435,7 +438,7 @@ function getArgumentJSON(
         case "dynamic":
           return (arguments_dynamic as any)[argumentName];
         case "source":
-          return (arguments_source as any)[argumentName];
+          return getBuilderArg(parentBlockName, argumentName);
         case "variable":
           return (arguments_variable as any)[argumentName];
 
@@ -454,6 +457,7 @@ function getArgumentJSON(
           return (arguments_build_post_processor as any)[argumentName];
         case "source":
           return (arguments_build_source as any)[argumentName];
+
         default:
           throw new Error(
             `Parent argument block not found: ${parentBlockType}`
@@ -474,6 +478,21 @@ function getArgumentJSON(
         `Grandparent argument block not found: ${grandparentBlockType}`
       );
   }
+}
+
+function getBuilderArg(
+  builderName: string | null,
+  argumentName: string
+): Argument {
+  const baseArg = (arguments_source as any)[argumentName];
+  let arg = null;
+
+  switch (builderName) {
+    case "file":
+      return (builder_file as any)[argumentName];
+  }
+
+  return arg || baseArg;
 }
 
 function getContextVarableJSON(blockName: string, varName: string): Argument {
