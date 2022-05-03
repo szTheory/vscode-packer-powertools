@@ -43,6 +43,9 @@ import * as contextvars_packer from "./docs/context-variables/packer.json";
 import * as contextvars_path from "./docs/context-variables/path.json";
 import * as contextvars_source from "./docs/context-variables/source.json";
 
+// Packer functions
+import * as packer_functions from "./docs/functions.json";
+
 // TODO: read this from the language-configuration json file
 const WORD_REGEX_STR =
   "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\\\\\s\\/\\?\\s]+)";
@@ -77,6 +80,14 @@ function provideHover(
       resolve(null);
     }
 
+    // Is it a function?
+    if (line.text.charAt(wordRange.end.character) === "(") {
+      console.log(`---- FUNCTION: ${word}`);
+      const json = getFunctionJSON(word);
+      const markdown = `**[${json.signature}](${json.url})** *${json.type} function*\n\n${json.description}`;
+      resolve(new vscode.Hover(markdown));
+    }
+
     // Is it an attribute assignment? (a line with an = symbol)
     if (line.text.indexOf("=") >= 0) {
       console.log("---- ATTRIBUTE");
@@ -109,11 +120,6 @@ function provideHover(
 
         // Or is it something to the right of the = symbol?
       }
-    }
-
-    // Is it a function?
-    if (false) {
-      // TODO: check if it's a function
     }
 
     // Is it a block? (a line ending with an { symbol)
@@ -365,6 +371,19 @@ function getBlockJSON(blockName: string): Block {
     default:
       throw new Error(`Block not found: ${blockName}`);
   }
+}
+
+type PackerFunctionType = "contextual" | "numeric";
+
+interface PackerFunction {
+  description: string;
+  signature: string;
+  type: PackerFunctionType;
+  url: string;
+}
+
+function getFunctionJSON(funcName: string): PackerFunction {
+  return (packer_functions as any)[funcName];
 }
 
 interface Argument {

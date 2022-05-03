@@ -1,0 +1,80 @@
+{
+  "aws_secretsmanager": {
+    "description": "Secrets can be read from the [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) and used within your template as locals.\n\nWhen key is not set (`null` or empty: `\"\"`) then `aws_secretsmanager` returns the first secret key stored in secret `name`.\n\nYou can either use this function in a `locals` block or directly inline where you want to use the value.",
+    "signature": "aws_secretsmanager(name, key)",
+    "type": "contextual",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/contextual/aws_secretsmanager"
+  },
+  "consul_key": {
+    "description": "[Consul](https://www.consul.io) keys can be used within your template using the `consul_key` function.\n\nYou can either use this function in a locals block or directly inline where you want to use the value.",
+    "signature": "consul_key(key_path)",
+    "type": "contextual",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/contextual/consul"
+  },
+  "env": {
+    "description": "`env` allows you to get the value for an environment variable inside input variables _only_. This is the only function that is callable from a variable block and it can only be used in the default input. `env` cannot be called from other places.",
+    "signature": "env(env_var_name)",
+    "type": "contextual",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/contextual/env"
+  },
+  "vault": {
+    "description": "Secrets can be read from [Vault](https://www.vaultproject.io/) and used within your template as user variables. the `vault` function is available _only_ within the default value of a user variable, allowing you to default a user variable to a vault secret.",
+    "signature": "vault(secret_path, secret_name)",
+    "type": "contextual",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/contextual/vault"
+  },
+  "abs": {
+    "description": "`abs` returns the absolute value of the given number. In other words, if the number is zero or positive then it is returned as-is, but if it is negative then it is multiplied by -1 to make it positive before returning it.",
+    "signature": "abs(number)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/abs"
+  },
+  "ceil": {
+    "description": "`ceil` returns the closest whole number that is greater than or equal to the given value, which may be a fraction.",
+    "signature": "ceil(number)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/ceil"
+  },
+  "floor": {
+    "description": "`floor` returns the closest whole number that is less than or equal to the given value, which may be a fraction.",
+    "signature": "floor(number)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/floor"
+  },
+  "log": {
+    "description": "`log` returns the logarithm of a given number in a given base.",
+    "signature": "log(number, base)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/log"
+  },
+  "max": {
+    "description": "`max` takes one or more numbers and returns the greatest number from the set. If the numbers are in a list or set value, use `...` to expand the collection to individual arguments.",
+    "signature": "max(list[number])",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/max"
+  },
+  "min": {
+    "description": "`min` takes one or more numbers and returns the smallest number from the set. If the numbers are in a list or set value, use `...` to expand the collection to individual arguments.",
+    "signature": "min(list[number])",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/min"
+  },
+  "parseint": {
+    "description": "`parseint` parses the given string as a representation of an integer in the specified base and returns the resulting number. The base must be between 2 and 62 inclusive.\n\nAll bases use the arabic numerals 0 through 9 first. Bases between 11 and 36 inclusive use case-insensitive latin letters to represent higher unit values. Bases 37 and higher use lowercase latin letters and then uppercase latin letters.\n\nIf the given string contains any non-digit characters or digit characters that are too large for the given base then `parseint` will produce an error.",
+    "signature": "parseint(number, base)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/parseint"
+  },
+  "pow": {
+    "description": "`pow` calculates an exponent, by raising its first argument to the power of the second argument.",
+    "signature": "pow(number, to_power)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/pow"
+  },
+  "signum": {
+    "description": "`signum` determines the sign of a number, returning a number between -1 and 1 to represent the sign.",
+    "signature": "signum(number)",
+    "type": "numeric",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/signum"
+  }
+}
