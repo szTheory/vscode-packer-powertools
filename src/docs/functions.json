@@ -190,5 +190,143 @@
     "signature": "upper(string)",
     "type": "string",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/upper"
+  },
+  "chunklist": {
+    "description": "`chunklist` splits a single list into fixed-size chunks, returning a list of lists.",
+    "signature": "chunklist(list, chunk_size)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/chunklist"
+  },
+  "coalesce": {
+    "description": "`coalesce` takes any number of arguments and returns the first one that isn't null or an empty string. To perform the `coalesce` operation with a list of strings, use the `...` symbol to expand the list as arguments.",
+    "signature": "coalesce(values...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/coalesce"
+  },
+  "coalescelist": {
+    "description": "`coalescelist` takes any number of list arguments and returns the first one that isn't empty. To perform the `coalescelist` operation with a list of lists, use the `...` symbol to expand the outer list as arguments.",
+    "signature": "coalescelist(lists...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/coalescelist"
+  },
+  "compact": {
+    "description": "`compact` takes a list of strings and returns a new list with any empty string elements removed.",
+    "signature": "compact(list[string])",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/compact"
+  },
+  "concat": {
+    "description": "`concat` takes two or more lists and combines them into a single list.",
+    "signature": "concat(lists...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/concat"
+  },
+  "contains": {
+    "description": "`contains` determines whether a given list or set contains a given single value as one of its elements.",
+    "signature": "contains(list, value)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/contains"
+  },
+  "distinct": {
+    "description": "`distinct` takes a list and returns a new list with any duplicate elements removed.",
+    "signature": "distinct(list)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/distinct"
+  },
+  "element": {
+    "description": "`element` retrieves a single element from a list.\n\nThe index is zero-based. This function produces an error if used with an empty list.\n\nUse the built-in index syntax `list[index]` in most cases. Use this function only for the special additional \"wrap-around\" behavior described below.",
+    "signature": "element(list, index)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/element"
+  },
+  "flatten": {
+    "description": "`flatten` takes a list and replaces any elements that are lists with a flattened sequence of the list contents.\n\nIf any of the nested lists also contain directly-nested lists, these too are flattened recursively.\n\nIndirectly-nested lists, such as those in maps, are _not_ flattened.",
+    "signature": "flatten(list)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/flatten"
+  },
+  "index": {
+    "description": "`index` finds the element index for a given value in a list. The returned index is zero-based. This function produces an error if the given value is not present in the list.",
+    "signature": "index(list, value)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/index"
+  },
+  "keys": {
+    "description": "`keys` takes a map and returns a list containing the keys from that map.\n\nThe keys are returned in lexicographical order, ensuring that the result will be identical as long as the keys in the map don't change.",
+    "signature": "keys(map)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/keys"
+  },
+  "length": {
+    "description": "`length` determines the length of a given list, map, or string.\n\nIf given a list or map, the result is the number of elements in that collection. If given a string, the result is the number of characters in the string.\n\nWhen given a string, the result is the number of characters, rather than the number of bytes or Unicode sequences that form them.",
+    "signature": "length(list | map | string)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/length"
+  },
+  "lookup": {
+    "description": "`lookup` retrieves the value of a single element from a map, given its key. If the given key does not exist, a the given default value is returned instead.",
+    "signature": "lookup(map, key, default)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/lookup"
+  },
+  "merge": {
+    "description": "`merge` takes an arbitrary number of maps and returns a single map that contains a merged set of elements from all of the maps.\n\nIf more than one given map defines the same key then the one that is later in the argument sequence takes precedence.",
+    "signature": "merge(maps...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/merge"
+  },
+  "range": {
+    "description": "`range` generates a list of numbers using a start value, a limit value, and a step value.\n\nThe `start` and `step` arguments can be omitted, in which case `start` defaults to zero and `step` defaults to either one or negative one depending on whether `limit` is greater than or less than `start`.\n\nThe resulting list is created by starting with the given `start` value and repeatedly adding `step` to it until the result is equal to or beyond `limit`.\n\nThe interpretation of `limit` depends on the direction of `step`: for a positive step, the sequence is complete when the next number is greater than or equal to `limit`. For a negative step, it's complete when less than or equal.",
+    "signature": "range(max), range(start, limit), range(start, limit, step)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/range"
+  },
+  "reverse": {
+    "description": "`reverse` takes a sequence and produces a new sequence of the same length with all of the same elements as the given sequence but in reverse order.",
+    "signature": "reverse(list)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/reverse"
+  },
+  "setintersection": {
+    "description": "The `setintersection` function takes multiple sets and produces a single set containing only the elements that all of the given sets have in common. In other words, it computes the [intersection](<https://en.wikipedia.org/wiki/Intersection_(set_theory)>) of the sets.\n\nThe given arguments are converted to sets, so the result is also a set and the ordering of the given elements is not preserved.",
+    "signature": "setintersection(sets...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/setintersection"
+  },
+  "setproduct": {
+    "description": "The `setproduct` function finds all of the possible combinations of elements from all of the given sets by computing the [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product).\n\nThis function is particularly useful for finding the exhaustive set of all combinations of members of multiple sets, such as per-application-per-environment resources.",
+    "signature": "setproduct(sets...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/setproduct"
+  },
+  "setunion": {
+    "description": "The `setunion` function takes multiple sets and produces a single set containing the elements from all of the given sets. In other words, it computes the [union](<https://en.wikipedia.org/wiki/Union_(set_theory)>) of the sets.\n\nThe given arguments are converted to sets, so the result is also a set and the ordering of the given elements is not preserved.",
+    "signature": "setunion(sets...)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/setunion"
+  },
+  "slice": {
+    "description": "`slice` extracts some consecutive elements from within a list.\n\n`startindex` is inclusive, while `endindex` is exclusive. This function returns an error if either index is outside the bounds of valid indices for the given list.",
+    "signature": "slice(list, startindex, endindex)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/slice"
+  },
+  "sort": {
+    "description": "`sort` takes a list of strings and returns a new list with those strings sorted lexicographically.\n\nThe sort is in terms of Unicode codepoints, with higher codepoints appearing after lower ones in the result.",
+    "signature": "sort(list[string])",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/sort"
+  },
+  "values": {
+    "description": "`values` takes a map and returns a list containing the values of the elements in that map.\n\nThe values are returned in lexicographical order by their corresponding _keys_, so the values will be returned in the same order as their keys would be returned from `keys`.",
+    "signature": "values(map)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/values"
+  },
+  "zipmap": {
+    "description": "`zipmap` constructs a map from a list of keys and a corresponding list of values.\n\nBoth `keyslist` and `valueslist` must be of the same length. `keyslist` must be a list of strings, while `valueslist` can be a list of any type.\n\nEach pair of elements with the same index from the two lists will be used as the key and value of an element in the resulting map. If the same value appears multiple times in `keyslist` then the value with the highest index is used in the resulting map.",
+    "signature": "zipmap(keyslist, valueslist)",
+    "type": "collection",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/zipmap"
   }
 }
