@@ -424,5 +424,35 @@
     "signature": "templatefile(path)",
     "type": "filesystem",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/templatefile"
+  },
+  "formatdate": {
+    "description": "`formatdate` converts a timestamp into a different time format.\n\nIn Packer, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax. `formatdate` requires the `timestamp` argument to be a string conforming to this syntax.",
+    "signature": "formatdate(spec, timestamp)",
+    "type": "datetime",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/formatdate"
+  },
+  "timeadd": {
+    "description": "`timeadd` adds a duration to a timestamp, returning a new timestamp.\n\nIn the Packer language, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax. `timeadd` requires the `timestamp` argument to be a string conforming to this syntax.\n\n`duration` is a string representation of a time difference, consisting of sequences of number and unit pairs, like `\"1.5h\"` or `\"1h30m\"`. The accepted units are `\"ns\"`, `\"us\"` (or `\"µs\"`), `\"ms\"`, `\"s\"`, `\"m\"`, and `\"h\"`. The first number may be negative to indicate a negative duration, like `\"-2h5m\"`.\n\nThe result is a string, also in RFC 3339 format, representing the result of adding the given direction to the given timestamp.",
+    "signature": "timeadd(timestamp, duration)",
+    "type": "datetime",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timeadd"
+  },
+  "timestamp": {
+    "description": "`timestamp` returns the current date and time.\n\nIn the Packer language, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax, and so `timestamp` returns a string in this format.\n\nThe result of this function will change every second, so using this function directly with resource attributes will cause a diff to be detected on every Packer run.",
+    "signature": "timestamp()",
+    "type": "datetime",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timestamp"
+  },
+  "legacy_isotime": {
+    "description": "The `legacy_isotime` function returns the current date and time using the given format string. The format string follows golang's datetime formatting.\n\nThis function has been provided to create backwards compatibility with Packer's legacy JSON templates. However, we recommend that you upgrade your HCL Packer template to use `timestamp` and `formatdate` together as soon as is convenient.\n\n-> **Note:** If you are using a large number of builders, provisioners or post-processors, the isotime may be slightly different for each one because it is from when the plugin is launched not the initial Packer process. In order to avoid this and make the timestamp consistent across all plugins, set it as a user variable and then access the user variable within your plugins.",
+    "signature": "legacy_isotime()",
+    "type": "datetime",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/legacy_isotime"
+  },
+  "legacy_strftime": {
+    "description": "The `legacy_strftime` function returns the current date and time using the given format string. The format string follows strftime's datetime formatting.\n\nThis function has been provided to create backwards compatibility with Packer's legacy JSON templates. However, we recommend that you upgrade your HCL Packer template to use `timestamp` and `formatdate` together as soon as is convenient.\n\n-> **Note:** If you are using a large number of builders, provisioners or post-processors, the strftime may be slightly different for each one because it is from when the plugin is launched not the initial Packer process. In order to avoid this and make the timestamp consistent across all plugins, set it as a user variable and then access the user variable within your plugins.",
+    "signature": "legacy_strftime()",
+    "type": "datetime",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/legacy_strftime"
   }
 }
