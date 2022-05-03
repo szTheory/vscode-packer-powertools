@@ -373,7 +373,18 @@ function getBlockJSON(blockName: string): Block {
   }
 }
 
-type PackerFunctionType = "contextual" | "numeric";
+type PackerFunctionType =
+  | "contextual"
+  | "numeric"
+  | "string"
+  | "collection"
+  | "encoding"
+  | "filesystem"
+  | "date and time"
+  | "hash and crypto"
+  | "uuid"
+  | "ip network"
+  | "type conversion";
 
 interface PackerFunction {
   description: string;

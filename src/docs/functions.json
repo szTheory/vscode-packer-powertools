@@ -76,5 +76,119 @@
     "signature": "signum(number)",
     "type": "numeric",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/numeric/signum"
+  },
+  "chomp": {
+    "description": "`chomp` removes newline characters at the end of a string.\n\nThis can be useful if, for example, the string was read from a file that has a newline character at the end.",
+    "signature": "chomp(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/chomp"
+  },
+  "format": {
+    "description": "`format` produces a string by formatting a number of other values according to a specification string. It is similar to the `printf` function in C, and other similar functions in other programming languages.",
+    "signature": "format(spec, values...)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/format"
+  },
+  "formatlist": {
+    "description": "`formatlist` produces a list of strings by formatting a number of other values according to a specification string. The specification string uses the same syntax as `format`.\n\nThe given values can be a mixture of list and non-list arguments. Any given lists must be the same length, which decides the length of the resulting list.\n\nThe list arguments are iterated together in order by index, while the non-list arguments are used repeatedly for each iteration. The format string is evaluated once per element of the list arguments.",
+    "signature": "formatlist(spec, values...)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/formatlist"
+  },
+  "indent": {
+    "description": "`indent` adds a given number of spaces to the beginnings of all but the first line in a given multi-line string. This function is useful for inserting a multi-line string into an already-indented context in another string",
+    "signature": "indent(num_spaces, string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/indent"
+  },
+  "join": {
+    "description": "`join` produces a string by concatenating together all elements of a given list of strings with the given delimiter.",
+    "signature": "join(separator, list)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/join"
+  },
+  "lower": {
+    "description": "`lower` converts all cased letters in the given string to lowercase. This function uses Unicode's definition of letters and of upper- and lowercase.",
+    "signature": "lower(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/lower"
+  },
+  "replace": {
+    "description": "`replace` searches a given string for another given substring, and replaces each occurrence with a given replacement string.",
+    "signature": "replace(string, substring, replacement)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/replace"
+  },
+  "regex_replace": {
+    "description": "`regex_replace` searches a given string for another given substring, and replaces each occurrence with a given replacement string. The substring argument can be a valid regular expression or a string.\n\n`substring` should not be wrapped in forward slashes, it is always treated as a regular expression. The `replacement` string can incorporate captured strings from the input by using an `$n` or `${n}` sequence, where `n` is the index or name of a capture group.",
+    "signature": "regex_replace(string, substring, replacement)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/regex_replace"
+  },
+  "regex": {
+    "description": "`regex` applies a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) to a string and returns the matching substrings.\n\nThe return type of `regex` depends on the capture groups, if any, in the pattern:\n- If the pattern has no capture groups at all, the result is a single string covering the substring matched by the pattern as a whole.\n- If the pattern has one or more _unnamed_ capture groups, the result is a list of the captured substrings in the same order as the definition of the capture groups.\n- If the pattern has one or more _named_ capture groups, the result is a map of the captured substrings, using the capture group names as map keys.",
+    "signature": "regex(pattern, string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/regex"
+  },
+  "regexall": {
+    "description": "`regexall` applies a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) to a string and returns a list of all matches.\n\n `regexall` is a variant of `regex` and uses the same pattern syntax. For any given input to `regex`, `regexall` returns a list of whatever type `regex` would've returned, with one element per match. That is:\n\n- If the pattern has no capture groups at all, the result is a list of strings.\n- If the pattern has one or more _unnamed_ capture groups, the result is a list of lists.\n- If the pattern has one or more _named_ capture groups, the result is a list of maps.\n\n`regexall` can also be used to test whether a particular string matches a given pattern, by testing whether the length of the resulting list of matches is greater than zero.",
+    "signature": "regexall(pattern, string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/regexall"
+  },
+  "split": {
+    "description": "`split` produces a list by dividing a given string at all occurrences of a given separator.",
+    "signature": "split(separator, string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/split"
+  },
+  "strrev": {
+    "description": "`strrev` reverses the characters in a string. Note that the characters are treated as _Unicode characters_ (in technical terms, Unicode [grapheme cluster boundaries](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries) are respected).",
+    "signature": "strrev(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/strrev"
+  },
+  "substr": {
+    "description": "`substr` extracts a substring from a given string by offset and length. The offset and length are both counted in _unicode characters_ rather than bytes.",
+    "signature": "substr(string, offset, length)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/substr"
+  },
+  "title": {
+    "description": "`title` converts the first letter of each word in the given string to uppercase.",
+    "signature": "title(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/title"
+  },
+  "trim": {
+    "description": "`trim` removes the specified characters from the start and end of the given string.",
+    "signature": "trim(string, what_to_trim)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/trim"
+  },
+  "trimprefix": {
+    "description": "`trimprefix` removes the specified prefix from the start of the given string.",
+    "signature": "trimprefix(string, what_to_trim)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/trimprefix"
+  },
+  "trimsuffix": {
+    "description": "`trimsuffix` removes the specified suffix from the end of the given string.",
+    "signature": "trimsuffix(string, what_to_trim)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/trimsuffix"
+  },
+  "trimspace": {
+    "description": "`trimspace` removes any space characters from the start and end of the given string.\n\nThis function follows the Unicode definition of \"space\", which includes regular spaces, tabs, newline characters, and various other space-like characters.",
+    "signature": "trimspace(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/trimspace"
+  },
+  "upper": {
+    "description": "`upper` converts all cased letters in the given string to uppercase. This function uses Unicode's definition of letters and of upper- and lowercase.",
+    "signature": "upper(string)",
+    "type": "string",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/string/upper"
   }
 }
