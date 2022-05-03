@@ -428,31 +428,67 @@
   "formatdate": {
     "description": "`formatdate` converts a timestamp into a different time format.\n\nIn Packer, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax. `formatdate` requires the `timestamp` argument to be a string conforming to this syntax.",
     "signature": "formatdate(spec, timestamp)",
-    "type": "datetime",
+    "type": "date and time",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/formatdate"
   },
   "timeadd": {
     "description": "`timeadd` adds a duration to a timestamp, returning a new timestamp.\n\nIn the Packer language, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax. `timeadd` requires the `timestamp` argument to be a string conforming to this syntax.\n\n`duration` is a string representation of a time difference, consisting of sequences of number and unit pairs, like `\"1.5h\"` or `\"1h30m\"`. The accepted units are `\"ns\"`, `\"us\"` (or `\"µs\"`), `\"ms\"`, `\"s\"`, `\"m\"`, and `\"h\"`. The first number may be negative to indicate a negative duration, like `\"-2h5m\"`.\n\nThe result is a string, also in RFC 3339 format, representing the result of adding the given direction to the given timestamp.",
     "signature": "timeadd(timestamp, duration)",
-    "type": "datetime",
+    "type": "date and time",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timeadd"
   },
   "timestamp": {
     "description": "`timestamp` returns the current date and time.\n\nIn the Packer language, timestamps are conventionally represented as strings using [RFC 3339](https://tools.ietf.org/html/rfc3339) \"Date and Time format\" syntax, and so `timestamp` returns a string in this format.\n\nThe result of this function will change every second, so using this function directly with resource attributes will cause a diff to be detected on every Packer run.",
     "signature": "timestamp()",
-    "type": "datetime",
+    "type": "date and time",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timestamp"
   },
   "legacy_isotime": {
     "description": "The `legacy_isotime` function returns the current date and time using the given format string. The format string follows golang's datetime formatting.\n\nThis function has been provided to create backwards compatibility with Packer's legacy JSON templates. However, we recommend that you upgrade your HCL Packer template to use `timestamp` and `formatdate` together as soon as is convenient.\n\n-> **Note:** If you are using a large number of builders, provisioners or post-processors, the isotime may be slightly different for each one because it is from when the plugin is launched not the initial Packer process. In order to avoid this and make the timestamp consistent across all plugins, set it as a user variable and then access the user variable within your plugins.",
     "signature": "legacy_isotime()",
-    "type": "datetime",
+    "type": "date and time",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/legacy_isotime"
   },
   "legacy_strftime": {
     "description": "The `legacy_strftime` function returns the current date and time using the given format string. The format string follows strftime's datetime formatting.\n\nThis function has been provided to create backwards compatibility with Packer's legacy JSON templates. However, we recommend that you upgrade your HCL Packer template to use `timestamp` and `formatdate` together as soon as is convenient.\n\n-> **Note:** If you are using a large number of builders, provisioners or post-processors, the strftime may be slightly different for each one because it is from when the plugin is launched not the initial Packer process. In order to avoid this and make the timestamp consistent across all plugins, set it as a user variable and then access the user variable within your plugins.",
     "signature": "legacy_strftime()",
-    "type": "datetime",
+    "type": "date and time",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/datetime/legacy_strftime"
+  },
+  "bcrypt": {
+    "description": "`bcrypt` computes a hash of the given string using the Blowfish cipher, returning a string in [the _Modular Crypt Format_](https://passlib.readthedocs.io/en/stable/modular_crypt_format.html) usually expected in the shadow password file on many Unix systems.\n\nThe `cost` argument is optional and will default to 10 if unspecified.\n\nSince a bcrypt hash value includes a randomly selected salt, each call to this function will return a different value, even if the given string and cost are the same. Using this function directly with resource arguments will therefore cause spurious diffs. We recommend using this function only in `provisioner` or `post-processor` blocks, or in data resources whose results are only used in those blocks.\n\nThe version prefix on the generated string (e.g. `$2a$`) may change in future versions of Packer.",
+    "signature": "bcrypt(string, cost)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/bcrypt"
+  },
+  "md5": {
+    "description": "`md5` computes the MD5 hash of a given string and encodes it with hexadecimal digits.\n\nThe given string is first encoded as UTF-8 and then the MD5 algorithm is applied as defined in [RFC 1321](https://tools.ietf.org/html/rfc1321). The raw hash is then encoded to lowercase hexadecimal digits before returning.\n\nBefore using this function for anything security-sensitive, refer to [RFC 6151](https://tools.ietf.org/html/rfc6151) for updated security considerations applying to the MD5 algorithm.",
+    "signature": "md5(string)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/md5"
+  },
+  "rsadecrypt": {
+    "description": "`rsadecrypt` decrypts an RSA-encrypted ciphertext, returning the corresponding cleartext.\n\nciphertext` must be a base64-encoded representation of the ciphertext, using the PKCS #1 v1.5 padding scheme. Packer uses the \"standard\" Base64 alphabet as defined in [RFC 4648 section 4](https://tools.ietf.org/html/rfc4648#section-4).\n\n`privatekey` must be a PEM-encoded RSA private key that is not itself encrypted.\n\nPacker has no corresponding function for _encrypting_ a message. Use this function to decrypt ciphertexts returned by remote services using a keypair negotiated out-of-band.",
+    "signature": "rsadecrypt(ciphertext, privatekey)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/rsadecrypt"
+  },
+  "sha1": {
+    "description": "`sha1` computes the SHA1 hash of a given string and encodes it with hexadecimal digits.\n\nThe given string is first encoded as UTF-8 and then the SHA1 algorithm is applied as defined in [RFC 3174](https://tools.ietf.org/html/rfc3174). The raw hash is then encoded to lowercase hexadecimal digits before returning.\n\nCollision attacks have been successfully performed against this hashing function. Before using this function for anything security-sensitive, review relevant literature to understand the security implications.",
+    "signature": "sha1(string)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/sha1"
+  },
+  "sha256": {
+    "description": "`sha256` computes the SHA256 hash of a given string and encodes it with hexadecimal digits.\n\nThe given string is first encoded as UTF-8 and then the SHA256 algorithm is applied as defined in [RFC 4634](https://tools.ietf.org/html/rfc4634). The raw hash is then encoded to lowercase hexadecimal digits before returning.",
+    "signature": "sha256(string)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/sha256"
+  },
+  "sha512": {
+    "description": "`sha512` computes the SHA512 hash of a given string and encodes it with hexadecimal digits.\n\nThe given string is first encoded as UTF-8 and then the SHA512 algorithm is applied as defined in [RFC 4634](https://tools.ietf.org/html/rfc4634). The raw hash is then encoded to lowercase hexadecimal digits before returning.",
+    "signature": "sha512(string)",
+    "type": "hash and crypto",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/crypto/sha512"
   }
 }
