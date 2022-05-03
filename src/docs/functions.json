@@ -234,7 +234,7 @@
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/distinct"
   },
   "element": {
-    "description": "`element` retrieves a single element from a list.\n\nThe index is zero-based. This function produces an error if used with an empty list.\n\nUse the built-in index syntax `list[index]` in most cases. Use this function only for the special additional \"wrap-around\" behavior described below.",
+    "description": "`element` retrieves a single element from a list.\n\nThe index is zero-based. This function produces an error if used with an empty list.\n\nUse the built-in index syntax `list[index]` in most cases. Use this function only for special additional \"wrap-around\" behavior.",
     "signature": "element(list, index)",
     "type": "collection",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/element"
@@ -328,5 +328,53 @@
     "signature": "zipmap(keyslist, valueslist)",
     "type": "collection",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/zipmap"
+  },
+  "base64decode": {
+    "description": "`base64decode` takes a string containing a Base64 character sequence and returns the original string.\n\nPacker uses the \"standard\" Base64 alphabet as defined in [RFC 4648 section 4](https://tools.ietf.org/html/rfc4648#section-4).\n\nStrings in the Packer language are sequences of unicode characters rather than bytes, so this function will also interpret the resulting bytes as UTF-8. If the bytes after Base64 decoding are _not_ valid UTF-8, this function produces an error.\n\nWhile we do not recommend manipulating large, raw binary data in the Packer language, Base64 encoding is the standard way to represent arbitrary byte sequences, and so resource types that accept or return binary data will use Base64 themselves, which avoids the need to encode or decode it directly in most cases. Various other functions with names containing \"base64\" can generate or manipulate Base64 data directly.",
+    "signature": "base64decode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/base64decode"
+  },
+  "base64encode": {
+    "description": "`base64encode` applies Base64 encoding to a string.\n\nPacker uses the \"standard\" Base64 alphabet as defined in [RFC 4648 section 4](https://tools.ietf.org/html/rfc4648#section-4).\n\nStrings in the Packer language are sequences of unicode characters rather than bytes, so this function will first encode the characters from the string as UTF-8, and then apply Base64 encoding to the result.\n\nThe Packer language applies Unicode normalization to all strings, and so passing a string through `base64decode` and then `base64encode` may not yield the original result exactly.\n\nWhile we do not recommend manipulating large, raw binary data in the Packer language, Base64 encoding is the standard way to represent arbitrary byte sequences, and so resource types that accept or return binary data will use Base64 themselves, and so this function exists primarily to allow string data to be easily provided to resource types that expect Base64 bytes.",
+    "signature": "base64encode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/base64encode"
+  },
+  "csvdecode": {
+    "description": "`csvdecode` decodes a string containing CSV-formatted data and produces a list of maps representing that data.\n\nCSV is _Comma-separated Values_, an encoding format for tabular data. There are many variants of CSV, but this function implements the format defined in [RFC 4180](https://tools.ietf.org/html/rfc4180).\n\nThe first line of the CSV data is interpreted as a \"header\" row: the values given are used as the keys in the resulting maps. Each subsequent line becomes a single map in the resulting list, matching the keys from the header row with the given values by index. All lines in the file must contain the same number of fields, or this function will produce an error.",
+    "signature": "csvdecode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/csvdecode"
+  },
+  "jsondecode": {
+    "description": "`jsondecode` interprets a given string as JSON, returning a representation of the result of decoding that string.\n\nThe JSON encoding is defined in [RFC 7159](https://tools.ietf.org/html/rfc7159).",
+    "signature": "jsondecode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/jsondecode"
+  },
+  "jsonencode": {
+    "description": "`jsonencode` encodes a given value to a string using JSON syntax.\n\nThe JSON encoding is defined in [RFC 7159](https://tools.ietf.org/html/rfc7159).",
+    "signature": "jsonencode(value)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/jsonencode"
+  },
+  "urlencode": {
+    "description": "`urlencode` applies URL encoding to a given string.\n\nThis function identifies characters in the given string that would have a special meaning when included as a query string argument in a URL and escapes them using [RFC 3986 \"percent encoding\"](https://tools.ietf.org/html/rfc3986#section-2.1).\n\nThe exact set of characters escaped may change over time, but the result is guaranteed to be interpolatable into a query string argument without inadvertently introducing additional delimiters.\n\nIf the given string contains non-ASCII characters, these are first encoded as UTF-8 and then percent encoding is applied separately to each UTF-8 byte.",
+    "signature": "urlencode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/urlencode"
+  },
+  "yamldecode": {
+    "description": "`yamldecode` parses a string as a subset of YAML, and produces a representation of its value.\n\nThis function supports a subset of [YAML 1.2](https://yaml.org/spec/1.2/spec.html).",
+    "signature": "yamldecode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/yamldecode"
+  },
+  "yamlencode": {
+    "description": "`yamlencode` encodes a given value to a string using [YAML 1.2](https://yaml.org/spec/1.2/spec) block syntax.\n\n~> **Warning:** This function is currently **experimental** and its exact result format may change in future versions of Packer, based on feedback. Do not use `yamldecode` to construct a value for any resource argument where changes to the result would be disruptive. To get a consistent string representation of a value use [`jsonencode`](/docs/templates/hcl_templates/functions/encoding/jsonencode) instead; its results are also valid YAML because YAML is a JSON superset.",
+    "signature": "yamlencode(string)",
+    "type": "encoding",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/yamlencode"
   }
 }
