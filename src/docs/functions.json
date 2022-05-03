@@ -249,7 +249,7 @@
     "description": "`index` finds the element index for a given value in a list. The returned index is zero-based. This function produces an error if the given value is not present in the list.",
     "signature": "index(list, value)",
     "type": "collection",
-    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/index"
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/collection/index-fn"
   },
   "keys": {
     "description": "`keys` takes a map and returns a list containing the keys from that map.\n\nThe keys are returned in lexicographical order, ensuring that the result will be identical as long as the keys in the map don't change.",
@@ -372,9 +372,57 @@
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/yamldecode"
   },
   "yamlencode": {
-    "description": "`yamlencode` encodes a given value to a string using [YAML 1.2](https://yaml.org/spec/1.2/spec) block syntax.\n\n~> **Warning:** This function is currently **experimental** and its exact result format may change in future versions of Packer, based on feedback. Do not use `yamldecode` to construct a value for any resource argument where changes to the result would be disruptive. To get a consistent string representation of a value use [`jsonencode`](/docs/templates/hcl_templates/functions/encoding/jsonencode) instead; its results are also valid YAML because YAML is a JSON superset.",
+    "description": "`yamlencode` encodes a given value to a string using [YAML 1.2](https://yaml.org/spec/1.2/spec) block syntax.\n\n~> **Warning:** This function is currently **experimental** and its exact result format may change in future versions of Packer, based on feedback. Do not use `yamldecode` to construct a value for any resource argument where changes to the result would be disruptive. To get a consistent string representation of a value use `jsonencode` instead; its results are also valid YAML because YAML is a JSON superset.",
     "signature": "yamlencode(string)",
     "type": "encoding",
     "url": "https://www.packer.io/docs/templates/hcl_templates/functions/encoding/yamlencode"
+  },
+  "abspath": {
+    "description": "`abspath` takes a string containing a filesystem path and converts it to an absolute path. That is, if the path is not absolute, it will be joined with the current working directory.\n\nReferring directly to filesystem paths in resource arguments may cause spurious diffs if the same configuration is applied from multiple systems or on different host operating systems. We recommend using filesystem paths only for transient values, such as the argument to `file` (where only the contents are then stored).",
+    "signature": "abspath(filesystem_path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/abspath"
+  },
+  "basename": {
+    "description": "`basename` takes a string containing a filesystem path and removes all except the last portion from it.\n\nThis function works only with the path string and does not access the filesystem itself. It is therefore unable to take into account filesystem features such as symlinks.\n\nIf the path is empty then the result is `\".\"`, representing the current working directory.\n\nThe behavior of this function depends on the host platform. On Windows systems, it uses backslash `` as the path segment separator. On Unix systems, the slash `/` is used.\n\nReferring directly to filesystem paths in resource arguments may cause spurious diffs if the same configuration is applied from multiple systems or on different host operating systems. We recommend using filesystem paths only for transient values, such as the argument to [`file`](/docs/templates/hcl_templates/functions/file) (where only the contents are then stored) or in `connection` and `provisioner` blocks.",
+    "signature": "basename(filesystem_path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/basename"
+  },
+  "dirname": {
+    "description": "`dirname` takes a string containing a filesystem path and removes the last portion from it.\n\nThis function works only with the path string and does not access the filesystem itself. It is therefore unable to take into account filesystem features such as symlinks.\n\nIf the path is empty then the result is `\".\"`, representing the current working directory.\n\nThe behavior of this function depends on the host platform. On Windows systems, it uses backslash `` as the path segment separator. On Unix systems, the slash `/` is used. The result of this function is normalized, so on a Windows system any slashes in the given path will be replaced by backslashes before returning.\n\nReferring directly to filesystem paths in resource arguments may cause spurious diffs if the same configuration is applied from multiple systems or on different host operating systems. We recommend using filesystem paths only for transient values, such as the argument to `file` (where only the contents are then stored) or in `connection` and `provisioner` blocks.",
+    "signature": "dirname(filesystem_path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/dirname"
+  },
+  "file": {
+    "description": "`file` reads the contents of a file at the given path and returns them as a string.\n\nStrings in the Packer language are sequences of Unicode characters, so this function will interpret the file contents as UTF-8 encoded text and return the resulting Unicode characters. If the file contains invalid UTF-8 sequences then this function will produce an error.\n\nThis function can be used only with files that already exist on disk at the beginning of a Packer run. Functions do not participate in the dependency graph, so this function cannot be used with files that are generated dynamically during a Packer operation.",
+    "signature": "file(path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/file"
+  },
+  "fileexists": {
+    "description": "`fileexists` determines whether a file exists at a given path.\n\nFunctions are evaluated during configuration parsing rather than at apply time, so this function can only be used with files that are already present on disk before Packer takes any actions.\n\nThis function works only with regular files. If used with a directory, FIFO, or other special mode, it will return an error.",
+    "signature": "fileexists(path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/fileexists"
+  },
+  "fileset": {
+    "description": "`fileset` enumerates a set of regular file names given a path and pattern. The path is automatically removed from the resulting set of file names and any result still containing path separators always returns forward slash (`/`) as the path separator for cross-system compatibility.\n\nSupported pattern matches:\n\n- `*` - matches any sequence of non-separator characters\n- `**` - matches any sequence of characters, including separator characters\n- `?` - matches any single non-separator character\n- `{alternative1,...}` - matches a sequence of characters if one of the comma-separated alternatives matches\n- `[CLASS]` - matches any single non-separator character inside a class of characters (see below)\n- `[^CLASS]` - matches any single non-separator character outside a class of characters (see below)\n\nCharacter classes support the following:\n\n- `[abc]` - matches any single character within the set\n- `[a-z]` - matches any single character within the range\n\nFunctions are evaluated during configuration parsing rather than at apply time, so this function can only be used with files that are already present on disk before Packer takes any actions.",
+    "signature": "fileset(path, pattern)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/fileset"
+  },
+  "pathexpand": {
+    "description": "`pathexpand` takes a filesystem path that might begin with a `~` segment, and if so it replaces that segment with the current user's home directory path.\n\nThis function works only with the path string and does not access the filesystem itself. It is therefore unable to take into account filesystem features such as symlinks.\n\nIf the leading segment in the path is not `~` then the given path is returned unmodified.\n\nUsing this function in resource arguments will cause spurious diffs if the same configuration is run by multiple users with different home directory paths, or used on different host operating systems. We recommend using this function only for transient values, such as in `connection` and `provisioner` blocks to locate SSH keys, etc.\n\nThe rules for determining the \"home directory\" for the current user vary depending on host operating system.",
+    "signature": "pathexpand(path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/pathexpand"
+  },
+  "templatefile": {
+    "description": "`templatefile` reads the file at the given path and renders its content as a template using a supplied set of template variables.\n\nThe template syntax is the same as for string templates in the main HCL2 language, including interpolation sequences delimited with `${ ... }`. This function just allows longer template sequences to be factored out into a separate file for readability.\n\nThe \"vars\" argument must be a map. Within the template file, each of the keys in the map is available as a variable for interpolation. The template may also use any other function available in Packer, except that recursive calls to templatefile are not permitted. Variable names must each start with a letter, followed by zero or more letters, digits, or underscores.\n\nStrings in HCL2 are sequences of Unicode characters, so this function will interpret the file contents as UTF-8 encoded text and return the resulting Unicode characters. If the file contains invalid UTF-8 sequences then this function will produce an error.\n\nThis function can be used only with files that already exist on disk at the beginning of a run.",
+    "signature": "templatefile(path)",
+    "type": "filesystem",
+    "url": "https://www.packer.io/docs/templates/hcl_templates/functions/file/templatefile"
   }
 }
