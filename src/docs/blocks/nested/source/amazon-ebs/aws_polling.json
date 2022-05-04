@@ -1,0 +1,4 @@
+{
+  "description": "Polling configuration for the AWS waiter. Configures the waiter for resources creation or actions like attaching volumes or importing image.",
+  "url": "https://www.packer.io/plugins/builders/amazon/ebs#polling-configuration"
+}

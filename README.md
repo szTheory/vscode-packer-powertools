@@ -2,6 +2,17 @@
 
 VS Code extension for Packer with code formatting, inline error messages, syntax highlighting, code folding, and command palette integration.
 
+Also has tooltip popups with documentation. Currently supports it for the base Packer feature set, as well as for these builders:
+
+- amazon-ebs
+
+and these provisioners:
+
+- ansible
+- ansible-local
+
+If you want tooltip support for another builder or provisioner, create an issue on the Github site and I'll add them in the order of most requested.
+
 ## Features
 
 Code formatting

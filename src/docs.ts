@@ -27,6 +27,7 @@ import * as block_nested_variable_validation from "./docs/blocks/nested/variable
 // Nested blocks - source
 import * as block_nested_source_amazon_ebs_assume_role from "./docs/blocks/nested/source/amazon-ebs/assume_role.json";
 import * as block_nested_source_amazon_ebs_vault_aws_engine from "./docs/blocks/nested/source/amazon-ebs/vault_aws_engine.json";
+import * as block_nested_source_amazon_ebs_aws_polling from "./docs/blocks/nested/source/amazon-ebs/aws_polling.json";
 
 // Arguments
 import * as arguments_build from "./docs/arguments/build.json";
@@ -63,6 +64,7 @@ import * as builder_ansible_local from "./docs/arguments/source_builders/ansible
 import * as builder_amazon_ebs from "./docs/arguments/source_builders/amazon-ebs.json";
 import * as builder_amazon_ebs_assume_role from "./docs/arguments/source_builders/amazon-ebs/assume_role.json";
 import * as builder_amazon_ebs_vault_aws_engine from "./docs/arguments/source_builders/amazon-ebs/vault_aws_engine.json";
+import * as builder_amazon_ebs_aws_polling from "./docs/arguments/source_builders/amazon-ebs/aws_polling.json";
 
 // TODO: read this from the language-configuration json file?
 const WORD_REGEX_STR =
@@ -400,6 +402,8 @@ function getNestedBlockJSON(
           switch (blockType) {
             case "assume_role":
               return block_nested_source_amazon_ebs_assume_role;
+            case "aws_polling":
+              return block_nested_source_amazon_ebs_aws_polling;
             case "vault_aws_engine":
               return block_nested_source_amazon_ebs_vault_aws_engine;
             default:
@@ -571,6 +575,9 @@ function getBuilderArg(
           break;
         case "assume_role":
           arg = (builder_amazon_ebs_assume_role as any)[argumentName];
+          break;
+        case "aws_polling":
+          arg = (builder_amazon_ebs_aws_polling as any)[argumentName];
           break;
         case "vault_aws_engine":
           arg = (builder_amazon_ebs_vault_aws_engine as any)[argumentName];
