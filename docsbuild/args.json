@@ -2,175 +2,105 @@
   "command": {
     "type": "string",
     "description": "The command to invoke ansible. Defaults to `ansible-playbook`. If you would like to provide a more complex command, for example, something that sets up a virtual environment before calling ansible, take a look at the ansible wrapper guide below for inspiration. Please note that Packer expects Command to be a path to an executable. Arbitrary bash scripting will not work and needs to go inside an executable script.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
   "extra_arguments": {
     "type": "[]string",
-    "description": "Extra arguments to pass to Ansible. These arguments _will not_ be passed through a shell and arguments should not be quoted.\n\nIn certain scenarios where you want to pass ansible command line arguments that include parameter and value (for example `--vault-password-file pwfile`), from ansible documentation this is correct format but that is NOT accepted here. Instead you need to do it like `--vault-password-file=pwfile`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "Extra arguments to pass to Ansible. These arguments _will not_ be passed through a shell and arguments should not be quoted.\n\nIn certain scenarios where you want to pass ansible command line arguments that include parameter and value (for example `--vault-password-file pwfile`), from ansible documentation this is correct format but that is NOT accepted here. Instead you need to do it like `--vault-password-file=pwfile`.\n\nIf you are running a Windows build on AWS, Azure, Google Compute, or OpenStack and would like to access the auto-generated password that Packer uses to connect to a Windows instance via WinRM, you can use the template variable",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "ansible_env_vars": {
+  "group_vars": {
+    "type": "string",
+    "description": "A path to the directory containing ansible group variables on your local system to be copied to the remote machine. By default, this is empty.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
+    "required": false,
+    "shared_description": ""
+  },
+  "host_vars": {
+    "type": "string",
+    "description": "A path to the directory containing ansible host variables on your local system to be copied to the remote machine. By default, this is empty.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
+    "required": false,
+    "shared_description": ""
+  },
+  "playbook_dir": {
+    "type": "string",
+    "description": "A path to the complete ansible directory structure on your local system to be copied to the remote machine as the `staging_directory` before all other files and directories.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
+    "required": false,
+    "shared_description": ""
+  },
+  "playbook_file": {
+    "type": "string",
+    "description": "The playbook file to be executed by ansible. This file must exist on your local system and will be uploaded to the remote machine. This option is exclusive with `playbook_files`.\n\nNote that one of `playbook_file` or `playbook_files` is required.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
+    "required": false,
+    "shared_description": ""
+  },
+  "playbook_files": {
     "type": "[]string",
-    "description": "Environment variables to set before running Ansible.\n\nThis is a template engine. Therefore, you may use user variables and template functions in this field.\n\nFor example, if you are running a Windows build on AWS, Azure, Google Compute, or OpenStack and would like to access the auto-generated password that Packer uses to connect to a Windows instance via WinRM, you can use the template variable `{{.WinRMPassword}}` in this option.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "The playbook files to be executed by ansible. These files must exist on your local system. If the files don't exist in the `playbook_dir` or you don't set `playbook_dir` they will be uploaded to the remote machine. This option is exclusive with `playbook_file`.\n\nNote that one of `playbook_file` or `playbook_files` is required.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "ansible_ssh_extra_args": {
+  "playbook_paths": {
     "type": "[]string",
-    "description": "Specifies --ssh-extra-args on command line defaults to -o IdentitiesOnly=yes",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "An array of directories of playbook files on your local system. These will be uploaded to the remote machine under `staging_directory`/playbooks. By default, this is empty.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "groups": {
+  "role_paths": {
     "type": "[]string",
-    "description": "The groups into which the Ansible host should be placed. When unspecified, the host is not associated with any groups.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "An array of paths to role directories on your local system. These will be uploaded to the remote machine under `staging_directory`/roles. By default, this is empty.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "empty_groups": {
-    "type": "[]string",
-    "description": "The groups which should be present in inventory file but remain empty.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "host_alias": {
+  "staging_directory": {
     "type": "string",
-    "description": "The alias by which the Ansible host should be known. Defaults to `default`. This setting is ignored when using a custom inventory file.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "The directory where all the configuration of Ansible by Packer will be placed. By default this is `/tmp/packer-provisioner-ansible-local/<uuid>`, where `<uuid>` is replaced with a unique ID so that this provisioner can be run more than once. If you'd like to know the location of the staging directory in advance, you should set this to a known location. This directory doesn't need to exist but must have proper permissions so that the SSH user that Packer uses is able to create directories and write into this folder. If the permissions are not correct, use a shell provisioner prior to this to configure it properly.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "user": {
-    "type": "string",
-    "description": "The `ansible_user` to use. Defaults to the user running packer, NOT the user set for your communicator. If you want to use the same user as the communicator, you will need to manually set it again in this field.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "local_port": {
-    "type": "int",
-    "description": "The port on which to attempt to listen for SSH connections. This value is a starting point. The provisioner will attempt listen for SSH connections on the first available of ten ports, starting at `local_port`. A system-chosen port is used when `local_port` is missing or empty.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "ssh_host_key_file": {
-    "type": "string",
-    "description": "The SSH key that will be used to run the SSH server on the host machine to forward commands to the target machine. Ansible connects to this server and will validate the identity of the server using the system known_hosts. The default behavior is to generate and use a onetime key. Host key checking is disabled via the `ANSIBLE_HOST_KEY_CHECKING` environment variable if the key is generated.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "ssh_authorized_key_file": {
-    "type": "string",
-    "description": "The SSH public key of the Ansible `ssh_user`. The default behavior is to generate and use a onetime key. If this key is generated, the corresponding private key is passed to `ansible-playbook` with the `-e ansible_ssh_private_key_file` option.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "sftp_command": {
-    "type": "string",
-    "description": "The command to run on the machine being provisioned by Packer to handle the SFTP protocol that Ansible will use to transfer files. The command should read and write on stdin and stdout, respectively. Defaults to `/usr/lib/sftp-server -e`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "skip_version_check": {
+  "clean_staging_directory": {
     "type": "bool",
-    "description": "Check if ansible is installed prior to running. Set this to `true`, for example, if you're going to install ansible during the packer run.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "use_sftp": {
-    "type": "bool",
-    "description": "Use SFTP",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "inventory_directory": {
-    "type": "string",
-    "description": "The directory in which to place the temporary generated Ansible inventory file. By default, this is the system-specific temporary file location. The fully-qualified name of this temporary file will be passed to the `-i` argument of the `ansible` command when this provisioner runs ansible. Specify this if you have an existing inventory directory with `host_vars` `group_vars` that you would like to use in the playbook that this provisioner will run.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "inventory_file_template": {
-    "type": "string",
-    "description": "This template represents the format for the lines added to the temporary inventory file that Packer will create to run Ansible against your image.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "If set to `true`, the content of the `staging_directory` will be removed after executing ansible. By default this is set to `false`.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
   "inventory_file": {
     "type": "string",
-    "description": "The inventory file to use during provisioning. When unspecified, Packer will create a temporary inventory file and will use the `host_alias`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "description": "The inventory file to be used by ansible. This file must exist on your local system and will be uploaded to the remote machine.\n\nWhen using an inventory file, it's also required to `--limit` the hosts to the specified host you're building. The `--limit` argument can be provided in the `extra_arguments` option.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
-  "keep_inventory_file": {
-    "type": "bool",
-    "description": "If `true`, the Ansible provisioner will not delete the temporary inventory file it creates in order to connect to the instance. This is useful if you are trying to debug your ansible run and using \"--on-error=ask\" in order to leave your instance running while you test your playbook. this option is not used if you set an `inventory_file`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+  "inventory_groups": {
+    "type": "[]string",
+    "description": "A comma-separated list of groups to which packer will assign the host `127.0.0.1`.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
   "galaxy_file": {
     "type": "string",
     "description": "A requirements file which provides a way to install roles or collections with the [ansible-galaxy cli](https://docs.ansible.com/ansible/latest/galaxy/user_guide.html#the-ansible-galaxy-command-line-tool) on the local machine before executing `ansible-playbook`. By default, this is empty.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   },
   "galaxy_command": {
     "type": "string",
     "description": "The command to invoke ansible-galaxy. By default, this is `ansible-galaxy`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "galaxy_force_install": {
-    "type": "bool",
-    "description": "Force overwriting an existing role. Adds `--force` option to `ansible-galaxy` command. By default, this is `false`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "galaxy_force_with_deps": {
-    "type": "bool",
-    "description": "Force overwriting an existing role and its dependencies. Adds `--force-with-deps` option to `ansible-galaxy` command. By default, this is `false`.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "roles_path": {
-    "type": "string",
-    "description": "The path to the directory on your local system in which to install the roles. Adds `--roles-path /path/to/your/roles` to `ansible-galaxy` command. By default, this is empty, and thus `--roles-path` option is not added to the command.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "collections_path": {
-    "type": "string",
-    "description": "The path to the directory on your local system in which to install the collections. Adds `--collections-path /path/to/your/collections` to `ansible-galaxy` command. By default, this is empty, and thus `--collections-path` option is not added to the command.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
-    "required": false,
-    "shared_description": ""
-  },
-  "use_proxy": {
-    "type": "boolean",
-    "description": "When `true`, set up a localhost proxy adapter so that Ansible has an IP address to connect to, even if your guest does not have an IP address. For example, the adapter is necessary for Docker builds to use the Ansible provisioner. If you set this option to `false`, but Packer cannot find an IP address to connect Ansible to, it will automatically set up the adapter anyway.\n\nIn order for Ansible to connect properly even when use_proxy is false, you need to make sure that you are either providing a valid username and ssh key to the ansible provisioner directly, or that the username and ssh key being used by the ssh communicator will work for your needs. If you do not provide a user to ansible, it will use the user associated with your builder, not the user running Packer. `use_proxy=false` is currently only supported for SSH and WinRM.\n\nCurrently, this defaults to `true` for all connection types. In the future, this option will be changed to default to `false` for SSH and WinRM connections where the provisioner has access to a host IP.",
-    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible-local",
     "required": false,
     "shared_description": ""
   }

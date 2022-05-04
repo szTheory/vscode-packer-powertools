@@ -49,12 +49,14 @@ import * as packer_functions from "./docs/functions.json";
 
 // Block names
 import * as blockname_provisioner_ansible from "./docs/blocknames/provisioner/ansible.json";
+import * as blockname_provisioner_ansible_local from "./docs/blocknames/provisioner/ansible-local.json";
 import * as blockname_source_file from "./docs/blocknames/source/file.json";
 import * as blockname_source_null from "./docs/blocknames/source/null.json";
 
 // Builder args
 import * as builder_file from "./docs/arguments/source_builders/file.json";
 import * as builder_ansible from "./docs/arguments/source_builders/ansible.json";
+import * as builder_ansible_local from "./docs/arguments/source_builders/ansible-local.json";
 
 // TODO: read this from the language-configuration json file?
 const WORD_REGEX_STR =
@@ -525,6 +527,8 @@ function getBuilderArg(
   switch (builderName) {
     case "ansible":
       return (builder_ansible as any)[argumentName];
+    case "ansible-local":
+      return (builder_ansible_local as any)[argumentName];
     case "file":
       return (builder_file as any)[argumentName];
   }
@@ -557,6 +561,8 @@ function getBlockNameJSON(
       switch (blockName) {
         case "ansible":
           return blockname_provisioner_ansible;
+        case "ansible-local":
+          return blockname_provisioner_ansible_local;
         default:
           throw new Error(
             `Block name JSON for ${blockName} in block type ${blockType} not found`
