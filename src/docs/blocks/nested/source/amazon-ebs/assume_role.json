@@ -1,0 +1,4 @@
+{
+  "description": "AssumeRoleConfig lets users set configuration options for assuming a special role when executing Packer.",
+  "url": "https://www.packer.io/plugins/builders/amazon/ebs#assume-role-configuration"
+}

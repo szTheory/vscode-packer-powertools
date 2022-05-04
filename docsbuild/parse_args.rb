@@ -36,7 +36,11 @@ def parse_packer_args(raw_args_text:, required:, url: "")
   end
 
   args_text_grouped.each do |raw|
-    arg_name = /^- \`([^``]+)\` \(/ms.match(raw)[1]
+    begin
+      arg_name = /^- \`([^``]+)\` \(/ms.match(raw)[1]
+    rescue Encoding::CompatibilityError => e
+      binding.pry
+    end
     type_val = /\(([^)]+)\) - /ms.match(raw)[1]
     desc_matches = / - (.+)$/ms.match(raw)
     desc_matches_str = desc_matches[1]

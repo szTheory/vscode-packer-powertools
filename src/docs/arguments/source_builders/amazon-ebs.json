@@ -1,0 +1,329 @@
+{
+  "skip_create_ami": {
+    "type": "bool",
+    "description": "If true, Packer will not create the AMI. Useful for setting to `true` during a build test stage. Default `false`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_block_device_mappings": {
+    "type": "awscommon.BlockDevices",
+    "description": "Add one or more block device mappings to the AMI. These will be attached when booting a new instance from your AMI. To add a block device during the Packer build see `launch_block_device_mappings` below. Your options here may vary depending on the type of VM you use. See the BlockDevices documentation for fields.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "launch_block_device_mappings": {
+    "type": "awscommon.BlockDevices",
+    "description": "Add one or more block devices before the Packer build starts. If you add instance store volumes or EBS volumes in addition to the root device volume, the created AMI will contain block device mapping information for those volumes. Amazon creates snapshots of the source instance's root volume and any other EBS volumes described here. When you launch an instance from this new AMI, the instance automatically launches with these additional volumes, and will restore them from snapshots taken from the source instance. See the BlockDevices documentation for fields.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "run_volume_tags": {
+    "type": "map[string]string",
+    "description": "Tags to apply to the volumes that are *launched* to create the AMI. These tags are *not* applied to the resulting AMI unless they're duplicated in `tags`. This is a template engine, see Build template data for more information.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "run_volume_tag": {
+    "type": "[]{name string, value string}",
+    "description": "Same as `run_volume_tags`, but defined as a singular block containing a `name` and a `value` field. In HCL2 mode the [`dynamic_block`](https://packer.io/docs/templates/hcl_templates/expressions.html#dynamic-blocks) will allow you to create those programatically.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "no_ephemeral": {
+    "type": "bool",
+    "description": "Relevant only to Windows guests: If you set this flag, we'll add clauses to the launch_block_device_mappings that make sure ephemeral drives don't show up in the EC2 console. If you launched from the EC2 console, you'd get this automatically, but the SDK does not provide this service. For more information, see [here](https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/InstanceStorage.html).\n\nBecause we don't validate the OS type of your guest, it is up to you to make sure you don't set this for *nix guests; behavior may be unpredictable.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+  "deprecate_at": {
+    "type": "string",
+    "description": "The date and time to deprecate the AMI, in UTC, in the following format: YYYY-MM-DDTHH:MM:SSZ. If you specify a value for seconds, Amazon EC2 rounds the seconds to the nearest minute. You can't specify a date in the past. The upper limit for DeprecateAt is 10 years from now.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs",
+    "required": false,
+    "shared_description": ""
+  },
+
+  "ami_name": {
+    "type": "string",
+    "description": "The name of the resulting AMI that will appear when managing AMIs in the AWS console or via APIs. This must be unique. To help make this unique, use a function like timestamp.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": true,
+    "shared_description": ""
+  },
+
+  "ami_description": {
+    "type": "string",
+    "description": "The description to set for the resulting AMI(s). By default this description is empty. This is a template engine, see Build template data for more information.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_virtualization_type": {
+    "type": "string",
+    "description": "The type of virtualization for the AMI you are building. This option is required to register HVM images. Can be paravirtual (default) or hvm.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_users": {
+    "type": "[]string",
+    "description": "A list of account IDs that have access to launch the resulting AMI(s). By default no additional users other than the user creating the AMI has permissions to launch it.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_groups": {
+    "type": "[]string",
+    "description": "A list of groups that have access to launch the resulting AMI(s). By default no groups have permission to launch the AMI. `all` will make the AMI publicly accessible. AWS currently doesn't accept any value other than \"all\"",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_org_arns": {
+    "type": "[]string",
+    "description": "A list of Amazon Resource Names (ARN) of AWS Organizations that have access to launch the resulting AMI(s). By default no organizations have permission to launch the AMI.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_ou_arns": {
+    "type": "[]string",
+    "description": "A list of Amazon Resource Names (ARN) of AWS Organizations organizational units (OU) that have access to launch the resulting AMI(s). By default no organizational units have permission to launch the AMI.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_product_codes": {
+    "type": "[]string",
+    "description": "A list of product codes to associate with the AMI. By default no product codes are associated with the AMI.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ami_regions": {
+    "type": "[]string",
+    "description": "A list of regions to copy the AMI to. Tags and attributes are copied along with the AMI. AMI copying takes time depending on the size of the AMI, but will generally take many minutes.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "skip_region_validation": {
+    "type": "bool",
+    "description": "Set to true if you want to skip validation of the ami_regions configuration option. Default false.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "tags": {
+    "type": "map[string]string",
+    "description": "Key/value pair tags applied to the AMI. This is a template engine, see Build template data for more information.\n\nThe builder no longer adds a \"Name\": \"Packer Builder\" entry to the tags.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "tag": {
+    "type": "[]{key string, value string}",
+    "description": "Same as `tags` but defined as a singular repeatable block containing a `key` and a `value` field. In HCL2 mode the `dynamic_block` will allow you to create those programatically.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "ena_support": {
+    "type": "boolean",
+    "description": "Enable enhanced networking (ENA but not SriovNetSupport) on HVM-compatible AMIs. If set, add `ec2:ModifyInstanceAttribute` to your AWS IAM policy.\n\nNote: you must make sure enhanced networking is enabled on your instance. See [Amazon's documentation on enabling enhanced networking](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking).",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "sriov_support": {
+    "type": "bool",
+    "description": "Enable enhanced networking (SriovNetSupport but not ENA) on HVM-compatible AMIs. If true, add `ec2:ModifyInstanceAttribute` to your AWS IAM policy. Note: you must make sure enhanced networking is enabled on your instance. See [Amazon's documentation on enabling enhanced networking](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking). Default `false`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "force_deregister": {
+    "type": "bool",
+    "description": "Force Packer to first deregister an existing AMI if one with the same name already exists. Default false.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "force_delete_snapshot": {
+    "type": "bool",
+    "description": "Force Packer to delete snapshots associated with AMIs, which have been deregistered by force_deregister. Default false.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "encrypt_boot": {
+    "type": "boolean",
+    "description": "Whether or not to encrypt the resulting AMI when copying a provisioned instance to an AMI. By default, Packer will keep the encryption setting to what it was in the source image. Setting false will result in an unencrypted image, and true will result in an encrypted one.\n\nIf you have used the `launch_block_device_mappings` to set an encryption key and that key is the same as the one you want the image encrypted with at the end, then you don't need to set this field; leaving it empty will prevent an unnecessary extra copy step and save you some time.\n\nPlease note that if you are using an account with the global \"Always encrypt new EBS volumes\" option set to `true`, Packer will be unable to override this setting, and the final image will be encrypted whether you set this value or not.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "kms_key_id": {
+    "type": "string",
+    "description": "ID, alias or ARN of the KMS key to use for AMI encryption. This only applies to the main `region` -- any regions the AMI gets copied to copied will be encrypted by the default EBS KMS key for that region, unless you set region-specific keys in AMIRegionKMSKeyIDs.\n\nSet this value if you select `encrypt_boot`, but don't want to use the region's default KMS key.\n\nIf you have a custom kms key you'd like to apply to the launch volume, and are only building in one region, it is more efficient to leave this and `encrypt_boot` empty and to instead set the key id in the launch_block_device_mappings (you can find an example below). This saves potentially many minutes at the end of the build by preventing Packer from having to copy and re-encrypt the image at the end of the build.\n\nFor valid formats see *KmsKeyId* in the [AWS API docs for CopyImage](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CopyImage.html). This field is validated by Packer, when using an alias, you will have to prefix `kms_key_id` with `alias/`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "region_kms_key_ids": {
+    "type": "map[string]string",
+    "description": "regions to copy the ami to, along with the custom kms key id (alias or arn) to use for encryption for that region. Keys must match the regions provided in `ami_regions`. If you just want to encrypt using a default ID, you can stick with `kms_key_id` and `ami_regions`. If you want a region to be encrypted with that region's default key ID, you can use an empty string `\"\"` instead of a key id in this map. (e.g. `\"us-east-1\": \"\"`) However, you cannot use default key IDs if you are using this in conjunction with `snapshot_users` -- in that situation you must use custom keys. For valid formats see *KmsKeyId* in the [AWS API docs for CopyImage](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CopyImage.html).\n\nThis option supercedes the `kms_key_id` option -- if you set both, and they are different, Packer will respect the value in `region_kms_key_ids` for your build region and silently disregard the value provided in `kms_key_id`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "skip_save_build_region": {
+    "type": "bool",
+    "description": "If true, Packer will not check whether an AMI with the `ami_name` exists in the region it is building in. It will use an intermediary AMI name, which it will not convert to an AMI in the build region. It will copy the intermediary AMI into any regions provided in `ami_regions`, then delete the intermediary AMI. Default `false`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+
+  "snapshot_tags": {
+    "type": "map[string]string",
+    "description": "Key/value pair tags to apply to snapshot. They will override AMI tags if already applied to snapshot. This is a template engine.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "snapshot_tag": {
+    "type": "[]{key string, value string}",
+    "description": "Same as `snapshot_tags` but defined as a singular repeatable block containing a `key` and a `value` field. In HCL2 mode the `dynamic_block` will allow you to create those programatically.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "snapshot_users": {
+    "type": "[]string",
+    "description": "A list of account IDs that have access to create volumes from the snapshot(s). By default no additional users other than the user creating the AMI has permissions to create volumes from the backing snapshot(s).",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "snapshot_groups": {
+    "type": "[]string",
+    "description": "A list of groups that have access to create volumes from the snapshot(s). By default no groups have permission to create volumes from the snapshot(s). all will make the snapshot publicly accessible.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#ami-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+
+  "access_key": {
+    "type": "string",
+    "description": "The access key used to communicate with AWS. On EBS, this is not required if you are using `use_vault_aws_engine` for authentication instead.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": true,
+    "shared_description": ""
+  },
+  "region": {
+    "type": "string",
+    "description": "The name of the region, such as `us-east-1`, in which to launch the EC2 instance to create the AMI. When chroot building, this value is guessed from environment.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": true,
+    "shared_description": ""
+  },
+  "secret_key": {
+    "type": "string",
+    "description": "The secret key used to communicate with AWS. This is not required if you are using `use_vault_aws_engine` for authentication instead.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": true,
+    "shared_description": ""
+  },
+
+  "assume_role": {
+    "type": "AssumeRoleConfig",
+    "description": "If provided with a role ARN, Packer will attempt to assume this role using the supplied credentials. See AssumeRoleConfig below for more details on all of the options available, and for a usage example.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "custom_endpoint_ec2": {
+    "type": "string",
+    "description": "This option is useful if you use a cloud provider whose API is compatible with aws EC2. Specify another endpoint like [this](https://ec2.custom.endpoint.com).",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "shared_credentials_file": {
+    "type": "string",
+    "description": "Path to a credentials file to load credentials from",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "decode_authorization_messages": {
+    "type": "bool",
+    "description": "Enable automatic decoding of any encoded authorization (error) messages using the `sts:DecodeAuthorizationMessage` API. Note: requires that the effective user/role have permissions to `sts:DecodeAuthorizationMessage` on resource `*`. Default `false`.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "insecure_skip_tls_verify": {
+    "type": "bool",
+    "description": "This allows skipping TLS verification of the AWS EC2 endpoint. The default is false.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "max_retries": {
+    "type": "int",
+    "description": "This is the maximum number of times an API call is retried, in the case where requests are being throttled or experiencing transient failures. The delay between the subsequent API calls increases exponentially.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "mfa_code": {
+    "type": "string",
+    "description": "The MFA [TOTP](https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) code. This should probably be a user variable since it changes all the time.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "profile": {
+    "type": "string",
+    "description": "The profile to use in the shared credentials file for AWS. See Amazon's documentation on [specifying profiles](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-profiles) for more details.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "skip_metadata_api_check": {
+    "type": "bool",
+    "description": "Skip Metadata Api Check",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "skip_credential_validation": {
+    "type": "bool",
+    "description": "Set to true if you want to skip validating AWS credentials before runtime.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "token": {
+    "type": "string",
+    "description": "The access token to use. This is different from the access key and secret key. If you're not sure what this is, then you probably don't need it. This will also be read from the AWS_SESSION_TOKEN environmental variable.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  },
+  "aws_polling": {
+    "type": "\\*AWSPollingConfig",
+    "description": "Polling configuration for the AWS waiter. Configures the waiter that checks resource state.",
+    "url": "https://www.packer.io/plugins/builders/amazon/ebs#access-configuration",
+    "required": false,
+    "shared_description": ""
+  }
+}

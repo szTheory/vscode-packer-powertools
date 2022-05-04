@@ -24,11 +24,13 @@ import * as block_nested_build_post_processors_post_processor from "./docs/block
 import * as block_nested_build_packer_required_plugins from "./docs/blocks/nested/packer/required_plugins.json";
 // Nested blocks - variable
 import * as block_nested_variable_validation from "./docs/blocks/nested/variable/validation.json";
+// Nested blocks - source
+import * as block_nested_source_amazon_ebs_assume_role from "./docs/blocks/nested/source/amazon-ebs/assume_role.json";
+import * as block_nested_source_amazon_ebs_vault_aws_engine from "./docs/blocks/nested/source/amazon-ebs/vault_aws_engine.json";
 
 // Arguments
 import * as arguments_build from "./docs/arguments/build.json";
 import * as arguments_build_hcr_packer_registry from "./docs/arguments/build/hcr_packer_registry.json";
-import * as arguments_build_provisioner from "./docs/arguments/build/provisioner.json";
 import * as arguments_build_post_processor from "./docs/arguments/build/post-processor.json";
 import * as arguments_build_source from "./docs/arguments/build/source.json";
 import * as arguments_dynamic from "./docs/arguments/dynamic.json";
@@ -50,6 +52,7 @@ import * as packer_functions from "./docs/functions.json";
 // Block names
 import * as blockname_provisioner_ansible from "./docs/blocknames/provisioner/ansible.json";
 import * as blockname_provisioner_ansible_local from "./docs/blocknames/provisioner/ansible-local.json";
+import * as blockname_source_amazon_ebs from "./docs/blocknames/source/amazon-ebs.json";
 import * as blockname_source_file from "./docs/blocknames/source/file.json";
 import * as blockname_source_null from "./docs/blocknames/source/null.json";
 
@@ -57,6 +60,9 @@ import * as blockname_source_null from "./docs/blocknames/source/null.json";
 import * as builder_file from "./docs/arguments/source_builders/file.json";
 import * as builder_ansible from "./docs/arguments/source_builders/ansible.json";
 import * as builder_ansible_local from "./docs/arguments/source_builders/ansible-local.json";
+import * as builder_amazon_ebs from "./docs/arguments/source_builders/amazon-ebs.json";
+import * as builder_amazon_ebs_assume_role from "./docs/arguments/source_builders/amazon-ebs/assume_role.json";
+import * as builder_amazon_ebs_vault_aws_engine from "./docs/arguments/source_builders/amazon-ebs/vault_aws_engine.json";
 
 // TODO: read this from the language-configuration json file?
 const WORD_REGEX_STR =
@@ -163,9 +169,13 @@ function provideHover(
         // TODO: determine what is the closest block name it's nested in
         // Is it a nested block?
         if (STARTS_WITH_WHITESPACE_REGEX.test(line.text)) {
-          const parentBlockType = findParentBlock(word, line, document);
+          const parentBlock = findParentBlock(word, line, document);
 
-          const json = getNestedBlockJSON(word, parentBlockType?.type || null);
+          const json = getNestedBlockJSON(
+            word,
+            parentBlock?.type || null,
+            parentBlock?.name || null
+          );
           const markdown = `**[${word}](${json.url})** *Block* \n\n${json.description}`;
           resolve(new vscode.Hover(markdown));
 
@@ -337,20 +347,21 @@ interface BlockTooltipInfo {
 }
 
 function getNestedBlockJSON(
-  blockName: string,
+  blockType: string,
+  parentBlockType: string | null,
   parentBlockName: string | null
 ): BlockTooltipInfo {
-  switch (parentBlockName) {
+  switch (parentBlockType) {
     case null:
-      switch (blockName) {
+      switch (blockType) {
         case "dynamic":
           return block_dynamic;
         default:
-          throw new Error(`Block not found: ${blockName}`);
+          throw new Error(`Block not found: ${blockType}`);
       }
 
     case "build":
-      switch (blockName) {
+      switch (blockType) {
         case "hcp_packer_registry":
           return block_nested_build_hcp_packer_registry;
         case "error-cleanup-provisioner":
@@ -364,35 +375,54 @@ function getNestedBlockJSON(
         case "source":
           return block_nested_build_source;
         default:
-          throw new Error(`Block not found: ${blockName}`);
+          throw new Error(`Block not found: ${blockType}`);
       }
 
     case "packer":
-      switch (blockName) {
+      switch (blockType) {
         case "required_plugins":
           return block_nested_build_packer_required_plugins;
         default:
-          throw new Error(`Block not found: ${blockName}`);
+          throw new Error(`Block not found: ${blockType}`);
       }
 
     case "post-processors":
-      switch (blockName) {
+      switch (blockType) {
         case "post-processor":
           return block_nested_build_post_processors_post_processor;
         default:
-          throw new Error(`Block not found: ${blockName}`);
+          throw new Error(`Block not found: ${blockType}`);
+      }
+
+    case "source":
+      switch (parentBlockName) {
+        case "amazon-ebs":
+          switch (blockType) {
+            case "assume_role":
+              return block_nested_source_amazon_ebs_assume_role;
+            case "vault_aws_engine":
+              return block_nested_source_amazon_ebs_vault_aws_engine;
+            default:
+              throw new Error(
+                `Block not found: ${blockType} for parent block name: ${parentBlockName}`
+              );
+          }
+        default:
+          throw new Error(
+            `Block not found: ${blockType} for parent block name: ${parentBlockName}`
+          );
       }
 
     case "variable":
-      switch (blockName) {
+      switch (blockType) {
         case "validation":
           return block_nested_variable_validation;
         default:
-          throw new Error(`Block not found: ${blockName}`);
+          throw new Error(`Block not found: ${blockType}`);
       }
 
     default:
-      throw new Error(`Parent block not found: ${parentBlockName}`);
+      throw new Error(`Parent block not found: ${parentBlockType}`);
   }
 }
 
@@ -453,7 +483,7 @@ interface Argument {
 
 function getArgumentJSON(
   grandparentBlockType: string | null,
-  _grandparentBlockName: string | null,
+  grandparentBlockName: string | null,
   parentBlockType: string,
   parentBlockName: string | null,
   argumentName: string
@@ -475,7 +505,7 @@ function getArgumentJSON(
         case "dynamic":
           return (arguments_dynamic as any)[argumentName];
         case "source":
-          return getBuilderArg(parentBlockName, argumentName);
+          return getBuilderArg(parentBlockName, null, argumentName);
         case "variable":
           return (arguments_variable as any)[argumentName];
 
@@ -489,7 +519,7 @@ function getArgumentJSON(
         case "hcp_packer_registry":
           return (arguments_build_hcr_packer_registry as any)[argumentName];
         case "provisioner":
-          return getBuilderArg(parentBlockName, argumentName);
+          return getBuilderArg(parentBlockName, null, argumentName);
         case "post-processor":
           return (arguments_build_post_processor as any)[argumentName];
         case "source":
@@ -500,6 +530,8 @@ function getArgumentJSON(
             `Parent argument block not found: ${parentBlockType}`
           );
       }
+    case "source":
+      return getBuilderArg(grandparentBlockName, parentBlockType, argumentName);
     case "variable":
       switch (parentBlockType) {
         case "validation":
@@ -519,6 +551,7 @@ function getArgumentJSON(
 
 function getBuilderArg(
   builderName: string | null,
+  parentArgumentName: string | null,
   argumentName: string
 ): Argument {
   const baseArg = (arguments_source as any)[argumentName];
@@ -526,11 +559,31 @@ function getBuilderArg(
 
   switch (builderName) {
     case "ansible":
-      return (builder_ansible as any)[argumentName];
+      arg = (builder_ansible as any)[argumentName];
+      break;
     case "ansible-local":
-      return (builder_ansible_local as any)[argumentName];
+      arg = (builder_ansible_local as any)[argumentName];
+      break;
+    case "amazon-ebs":
+      switch (parentArgumentName) {
+        case null:
+          arg = (builder_amazon_ebs as any)[argumentName];
+          break;
+        case "assume_role":
+          arg = (builder_amazon_ebs_assume_role as any)[argumentName];
+          break;
+        case "vault_aws_engine":
+          arg = (builder_amazon_ebs_vault_aws_engine as any)[argumentName];
+          break;
+        default:
+          throw new Error(
+            `Argument not found: ${argumentName} for parent argument ${parentArgumentName}`
+          );
+      }
+      break;
     case "file":
-      return (builder_file as any)[argumentName];
+      arg = (builder_file as any)[argumentName];
+      break;
   }
 
   return arg || baseArg;
@@ -570,6 +623,8 @@ function getBlockNameJSON(
       }
     case "source":
       switch (blockName) {
+        case "amazon-ebs":
+          return blockname_source_amazon_ebs;
         case "file":
           return blockname_source_file;
         case "null":
