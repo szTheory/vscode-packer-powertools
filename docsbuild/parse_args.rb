@@ -9,22 +9,46 @@ require "pry"
 
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/AbcSize
-def parse_packer_args(raw_args_text:, url: "", required:)
-  raw_args_text_split = raw_args_text.split("\n\n")
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
+def parse_packer_args(raw_args_text:, required:, url: "")
+  raw_args_text_split = raw_args_text.gsub(/\n\s+\n/, "\n\n").split("\n\n").map(&:strip)
 
   args = {}
   shared_description = ""
 
-  if (!raw_args_text_split.first.start_with?("- "))
-    shared_description = raw_args_text_split.shift.gsub("\n", " ")
+  # rubocop:disable Style/IfUnlessModifier
+  unless raw_args_text_split.first.start_with?("- ")
+    shared_description = raw_args_text_split.shift.gsub(/\n/, " ")
+  end
+  # rubocop:enable Style/IfUnlessModifier
+
+  # group extra paragraphs onto the previous item
+  args_text_grouped = []
+  raw_args_text_split.each do |arg_text|
+    if arg_text.start_with?("- ")
+      args_text_grouped.push(arg_text)
+    else
+      # rubocop:disable Style/StringLiteralsInInterpolation
+      args_text_grouped[-1] += "\n\n#{arg_text.gsub(/\s+/, " ")}"
+      # rubocop:enable Style/StringLiteralsInInterpolation
+    end
   end
 
-  raw_args_text_split.each do |raw|
-    arg_name = /^- \`(.+)\` \(/ms.match(raw)[1]
-    type_val = /\((.+)\) - /ms.match(raw)[1]
+  args_text_grouped.each do |raw|
+    arg_name = /^- \`([^``]+)\` \(/ms.match(raw)[1]
+    type_val = /\(([^)]+)\) - /ms.match(raw)[1]
     desc_matches = / - (.+)$/ms.match(raw)
-    desc = desc_matches.nil? ? "" : desc_matches[1].split(" - ")[-1].gsub("\n", " ").gsub(/\s+/, " ")
+    desc_matches_str = desc_matches[1]
+    desc = if desc_matches.nil?
+        ""
+      else
+        desc_matches_str.split(" - ")[-1].split("\n\n").map do |str|
+          str.strip.gsub(/\s+/, " ")
+        end.join("\n\n")
+      end
 
+    # rubocop:disable Style/TrailingCommaInHashLiteral
     args[arg_name.intern] = {
       type: type_val.strip,
       description: desc.strip,
@@ -32,6 +56,7 @@ def parse_packer_args(raw_args_text:, url: "", required:)
       required: required,
       shared_description: shared_description.strip,
     }
+    # rubocop:enable Style/TrailingCommaInHashLiteral
   end
 
   args
@@ -39,6 +64,8 @@ end
 
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
 
 # Parse CLI args
 options = {}
@@ -52,7 +79,10 @@ OptionParser.new do |parser|
     options[:url] = value
   end
   parser.on("-r [boolean]", "--required", "Whether these args are required or not") do |value|
-    options[:required] = value.downcase == "true" || value.downcase == "yes" || value.downcase == "y" || value.downcase == "required"
+    options[:required] = value.downcase == "true" ||
+                         value.downcase == "yes" ||
+                         value.downcase == "y" ||
+                         value.downcase == "required"
   end
 end.parse!
 

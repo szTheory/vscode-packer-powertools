@@ -1,4 +1,48 @@
 {
+  "pause_before": {
+    "type": "duration",
+    "description": "Sleep for duration before execution.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": false,
+    "shared_description": ""
+  },
+  "max_retries": {
+    "type": "int",
+    "description": "Max times the provisioner will retry in case of failure. Defaults to zero (0). Zero means an error will not be retried.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": false,
+    "shared_description": ""
+  },
+  "only": {
+    "type": "array of string",
+    "description": "Only run the provisioner for listed builder(s) by name.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": false,
+    "shared_description": ""
+  },
+  "override": {
+    "type": "object",
+    "description": "Override the builder with different settings for a specific builder.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": false,
+    "shared_description": ""
+  },
+  "timeout": {
+    "type": "duration",
+    "description": "If the provisioner takes more than for example `1h10m1s` or `10m` to finish, the provisioner will timeout and fail.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": false,
+    "shared_description": ""
+  },
+
+  "playbook_file": {
+    "type": "string",
+    "description": "The playbook to be run by Ansible.",
+    "url": "https://www.packer.io/plugins/provisioners/ansible/ansible",
+    "required": true,
+    "shared_description": ""
+  },
+
   "command": {
     "type": "string",
     "description": "The command to invoke ansible. Defaults to `ansible-playbook`. If you would like to provide a more complex command, for example, something that sets up a virtual environment before calling ansible, take a look at the ansible wrapper guide below for inspiration. Please note that Packer expects Command to be a path to an executable. Arbitrary bash scripting will not work and needs to go inside an executable script.",

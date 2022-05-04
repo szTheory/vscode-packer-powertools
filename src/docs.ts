@@ -38,9 +38,6 @@ import * as arguments_source from "./docs/arguments/source.json";
 import * as arguments_variable from "./docs/arguments/variable.json";
 import * as arguments_variable_validation from "./docs/arguments/variable/validation.json";
 
-// Builder args
-import * as builder_file from "./docs/arguments/source_builders/file.json";
-
 // Context vars
 import * as contextvars_build from "./docs/context-variables/build.json";
 import * as contextvars_packer from "./docs/context-variables/packer.json";
@@ -51,8 +48,13 @@ import * as contextvars_source from "./docs/context-variables/source.json";
 import * as packer_functions from "./docs/functions.json";
 
 // Block names
+import * as blockname_provisioner_ansible from "./docs/blocknames/provisioner/ansible.json";
 import * as blockname_source_file from "./docs/blocknames/source/file.json";
 import * as blockname_source_null from "./docs/blocknames/source/null.json";
+
+// Builder args
+import * as builder_file from "./docs/arguments/source_builders/file.json";
+import * as builder_ansible from "./docs/arguments/source_builders/ansible.json";
 
 // TODO: read this from the language-configuration json file?
 const WORD_REGEX_STR =
@@ -485,7 +487,7 @@ function getArgumentJSON(
         case "hcp_packer_registry":
           return (arguments_build_hcr_packer_registry as any)[argumentName];
         case "provisioner":
-          return (arguments_build_provisioner as any)[argumentName];
+          return getBuilderArg(parentBlockName, argumentName);
         case "post-processor":
           return (arguments_build_post_processor as any)[argumentName];
         case "source":
@@ -521,6 +523,8 @@ function getBuilderArg(
   let arg = null;
 
   switch (builderName) {
+    case "ansible":
+      return (builder_ansible as any)[argumentName];
     case "file":
       return (builder_file as any)[argumentName];
   }
@@ -549,6 +553,15 @@ function getBlockNameJSON(
   blockName: string
 ): BlockTooltipInfo {
   switch (blockType) {
+    case "provisioner":
+      switch (blockName) {
+        case "ansible":
+          return blockname_provisioner_ansible;
+        default:
+          throw new Error(
+            `Block name JSON for ${blockName} in block type ${blockType} not found`
+          );
+      }
     case "source":
       switch (blockName) {
         case "file":
